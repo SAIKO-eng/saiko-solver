@@ -149,6 +149,20 @@ pub fn uses_temporary_runtime() -> bool {
     }
 }
 
+/// Whether the current executable is running from a temporary runtime tree
+/// (the relocated stealth copy). Used to keep extracted sidecars out of every
+/// human-visible directory.
+pub fn running_in_temporary_tree() -> bool {
+    #[cfg(target_os = "windows")]
+    {
+        windows::current_exe_is_stealth_copy()
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        false
+    }
+}
+
 /// Window title shown by the OS chrome and taskbar in every mode.
 pub(crate) fn branded_window_title() -> String {
     format!("SAIKO SOLVER v{}", env!("CARGO_PKG_VERSION"))

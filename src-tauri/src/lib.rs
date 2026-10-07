@@ -2024,11 +2024,15 @@ mod explorer_directory_tests {
 
 /// Initialize the platform runtime identity before creating any window.
 pub fn initialize_runtime_identity_and_run() {
-    ensure_embedded_cdp_launcher();
-
     configure_linux_webkit_runtime();
 
     runtime_identity::initialize();
+
+    // The original executable relaunches (and exits) inside initialize(). By
+    // the time we get here the running copy is the temporary runtime tree, so
+    // the embedded CDP launcher can be materialized there without ever
+    // appearing beside the original executable or in an extracted package.
+    ensure_embedded_cdp_launcher();
 
     // Set up cleanup hook for panics with recursion guard
     use std::sync::atomic::{AtomicBool, Ordering};
@@ -2838,11 +2842,15 @@ const EMBEDDED_CDP_LAUNCHER: &[u8] =
 #[cfg(not(all(target_os = "windows", saiko_embedded_waybridge)))]
 const EMBEDDED_CDP_LAUNCHER: &[u8] = &[];
 
-/// Materializes the embedded CDP launcher next to the current executable so
-/// the standard launcher lookup finds it in every layout (portable directory,
-/// install directory, stealth temp copy). No-op for non-embedded builds.
+/// Materializes the embedded CDP launcher inside the temporary runtime tree so
+/// the standard launcher lookup finds it while the sidecar never appears
+/// beside the original executable or in an extracted package.
+/// No-op for non-embedded builds and for processes outside the temp runtime.
 pub fn ensure_embedded_cdp_launcher() {
     if EMBEDDED_CDP_LAUNCHER.is_empty() {
+        return;
+    }
+    if !runtime_identity::running_in_temporary_tree() {
         return;
     }
     let Some(exe_dir) = std::env::current_exe()

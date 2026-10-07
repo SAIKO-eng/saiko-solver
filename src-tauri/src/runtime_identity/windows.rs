@@ -219,6 +219,13 @@ pub fn is_stealth_mode() -> bool {
     IS_STEALTH_MODE.load(Ordering::Relaxed)
 }
 
+/// Whether the current executable path is the relocated temp-tree copy.
+pub(crate) fn current_exe_is_stealth_copy() -> bool {
+    env::current_exe()
+        .map(|path| is_stealth_copy_path(&path))
+        .unwrap_or(false)
+}
+
 /// Branded window title shown in the taskbar for the stealth copy. The
 /// filesystem-level randomization (random executable name in the temp tree)
 /// is unchanged; only the visible OS title is branded.
