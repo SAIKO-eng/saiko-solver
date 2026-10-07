@@ -55,8 +55,8 @@ export function validateConfiguration() {
     'release workflow must not require Apple signing or notarization credentials', failures);
   requireMatch(!/sign-macos-runtime\.sh|\bcodesign\b/i.test(releaseWorkflow),
     'release workflow must not invoke macOS signing tools', failures);
-  requireMatch(JSON.stringify(common.bundle?.externalBin) === JSON.stringify([`binaries/${expected.bridge}`]),
-    `externalBin must contain only binaries/${expected.bridge}`, failures);
+  requireMatch(!Array.isArray(common.bundle?.externalBin) || common.bundle.externalBin.length === 0,
+    `Merged single-binary builds must not bundle external sidecar binaries (externalBin must be empty)`, failures);
   requireMatch(new RegExp(`\\[\\[bin\\]\\][\\s\\S]*?name\\s*=\\s*"${expected.bridge}"`).test(launcherCargo),
     `launcher binary must be named ${expected.bridge}`, failures);
   requireMatch(new RegExp(`\\[\\[bin\\]\\][\\s\\S]*?name\\s*=\\s*"${expected.runner}"`).test(runnerCargo),

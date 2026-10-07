@@ -155,7 +155,6 @@ jobs:
           $portableDir = 'build/windows-portable'
           New-Item -ItemType Directory -Force -Path $portableDir | Out-Null
           Copy-Item 'target/release/saiko-solver.exe' "$portableDir/saiko-solver.exe"
-          Copy-Item 'src-tauri/binaries/waybridge-x86_64-pc-windows-msvc.exe' "$portableDir/waybridge.exe"
 
       - name: Upload Windows artifact (portable)
         uses: actions/upload-artifact@v7

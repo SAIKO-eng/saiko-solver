@@ -2024,6 +2024,8 @@ mod explorer_directory_tests {
 
 /// Initialize the platform runtime identity before creating any window.
 pub fn initialize_runtime_identity_and_run() {
+    ensure_embedded_cdp_launcher();
+
     configure_linux_webkit_runtime();
 
     runtime_identity::initialize();
@@ -2823,6 +2825,42 @@ fn legacy_unix_cdp_launcher_path() -> Result<std::path::PathBuf, String> {
         .join("discord-quest-helper")
         .join("bin")
         .join("discord-cdp-launcher"))
+}
+
+/// Embedded copy of the Windows CDP launcher sidecar. Merged single-binary
+/// builds embed the launcher so this executable performs the work of both the
+/// main application and the bridge (written next to the running executable on
+/// startup). Placeholder-only compiles keep an empty slice so clippy, tests,
+/// and fresh-checkout builds never depend on a real sidecar artifact.
+#[cfg(all(target_os = "windows", saiko_embedded_waybridge))]
+const EMBEDDED_CDP_LAUNCHER: &[u8] =
+    include_bytes!("../binaries/waybridge-x86_64-pc-windows-msvc.exe");
+#[cfg(not(all(target_os = "windows", saiko_embedded_waybridge)))]
+const EMBEDDED_CDP_LAUNCHER: &[u8] = &[];
+
+/// Materializes the embedded CDP launcher next to the current executable so
+/// the standard launcher lookup finds it in every layout (portable directory,
+/// install directory, stealth temp copy). No-op for non-embedded builds.
+pub fn ensure_embedded_cdp_launcher() {
+    if EMBEDDED_CDP_LAUNCHER.is_empty() {
+        return;
+    }
+    let Some(exe_dir) = std::env::current_exe()
+        .ok()
+        .and_then(|path| path.parent().map(|parent| parent.to_path_buf()))
+    else {
+        return;
+    };
+    let target = exe_dir.join("waybridge.exe");
+    let needs_write = match std::fs::metadata(&target) {
+        Ok(meta) => meta.len() != EMBEDDED_CDP_LAUNCHER.len() as u64,
+        Err(_) => true,
+    };
+    if needs_write {
+        if let Err(error) = std::fs::write(&target, EMBEDDED_CDP_LAUNCHER) {
+            eprintln!("[Runtime] Failed to materialize embedded CDP launcher: {error}");
+        }
+    }
 }
 
 #[cfg(any(windows, test))]

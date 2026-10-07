@@ -69,6 +69,16 @@ fn main() {
         fs::write(&launcher_path, b"").expect("Failed to create CDP launcher placeholder");
     }
 
+    // Merged single-binary builds embed the CDP launcher inside the main
+    // executable. Emit the cfg only when a real (non-empty) launcher artifact
+    // exists so placeholder-only compiles (clippy, tests) remain embed-free
+    // and include_bytes! never reads an empty file.
+    if let Ok(meta) = fs::metadata(&launcher_path) {
+        if meta.len() > 0 {
+            println!("cargo:rustc-cfg=saiko_embedded_waybridge");
+        }
+    }
+
     // Tell Cargo to re-run build script if the data copy changes
     println!("cargo:rerun-if-changed=data/{}", runner_exe_name);
     println!("cargo:rerun-if-changed=data/runner-version.txt");
