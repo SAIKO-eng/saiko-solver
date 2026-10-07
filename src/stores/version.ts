@@ -75,8 +75,8 @@ export const useVersionStore = defineStore('version', () => {
 
         try {
             const url = checkPreRelease.value
-              ? 'https://api.github.com/repos/saiko_dev/saiko-solver/releases'
-              : 'https://api.github.com/repos/saiko_dev/saiko-solver/releases/latest'
+              ? 'https://api.github.com/repos/SAIKO-eng/saiko-solver/releases'
+              : 'https://api.github.com/repos/SAIKO-eng/saiko-solver/releases/latest'
 
             const res = await fetch(url, {
                 headers: {

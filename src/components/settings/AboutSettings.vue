@@ -175,13 +175,13 @@ function removeBubble(id: number) {
 
         <a
           href="#"
-          @click.prevent="openExternal('https://github.com/saiko_dev/saiko-solver')"
+          @click.prevent="openExternal('https://github.com/SAIKO-eng/saiko-solver')"
           class="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-2 transition-colors hover:bg-muted/60"
         >
           <span class="flex min-w-0 items-center gap-2">
             <img src="/icons/github-mark.svg" alt="GitHub" class="h-5 w-5 shrink-0 dark:hidden" />
             <img src="/icons/github-mark-white.svg" alt="GitHub" class="hidden h-5 w-5 shrink-0 dark:block" />
-            <span class="truncate text-primary">saiko_dev/saiko-solver</span>
+            <span class="truncate text-primary">SAIKO-eng/saiko-solver</span>
           </span>
           <ExternalLink class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         </a>
@@ -191,7 +191,7 @@ function removeBubble(id: number) {
             variant="outline"
             size="sm"
             :class="settingToneClass.info.buttonSoft"
-            @click="openExternal('https://github.com/saiko_dev/saiko-solver/issues/new/choose')"
+            @click="openExternal('https://github.com/SAIKO-eng/saiko-solver/issues/new/choose')"
           >
             {{ t('settings.feedback') }}
           </Button>
