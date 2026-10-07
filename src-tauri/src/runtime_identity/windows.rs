@@ -117,14 +117,6 @@ fn is_stealth_copy_path(exe: &Path) -> bool {
     paths_eq(temp_parent, &env::temp_dir())
 }
 
-fn window_title_for_exe(exe: &Path) -> String {
-    exe.file_stem()
-        .and_then(|s| s.to_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or("Runtime")
-        .to_string()
-}
-
 fn persistent_webview_data_dir_for(local_appdata: &Path) -> Result<PathBuf, String> {
     let suffix = Path::new(RUNTIME_NAMESPACE).join(WEBVIEW_PROFILE_DIR_NAME);
     if contains_product_token(&suffix.to_string_lossy()) {
@@ -227,12 +219,11 @@ pub fn is_stealth_mode() -> bool {
     IS_STEALTH_MODE.load(Ordering::Relaxed)
 }
 
-/// Window title for the stealth copy: the executable stem.
+/// Branded window title shown in the taskbar for the stealth copy. The
+/// filesystem-level randomization (random executable name in the temp tree)
+/// is unchanged; only the visible OS title is branded.
 pub fn generate_stealth_window_title() -> String {
-    env::current_exe()
-        .ok()
-        .map(|path| window_title_for_exe(&path))
-        .unwrap_or_else(|| "Runtime".to_string())
+    super::branded_window_title()
 }
 
 /// Stable, neutral WebView2 profile shared by every packaged app version.
@@ -253,8 +244,8 @@ pub fn webview_user_data_dir() -> Result<Option<PathBuf>, String> {
 pub fn apply_process_identity() {
     #[cfg(target_os = "windows")]
     if is_stealth_mode() {
-        let app_id = generate_stealth_window_title();
-        let app_id = windows::core::HSTRING::from(app_id.as_str());
+        const APP_USER_MODEL_ID: &str = "com.saiko.solver";
+        let app_id = windows::core::HSTRING::from(APP_USER_MODEL_ID);
         if let Err(err) =
             unsafe { windows::Win32::UI::Shell::SetCurrentProcessExplicitAppUserModelID(&app_id) }
         {
@@ -715,9 +706,11 @@ mod tests {
     }
 
     #[test]
-    fn window_title_matches_stem() {
-        let exe = PathBuf::from("abc").join("c0ffee12beef.exe");
-        assert_eq!(window_title_for_exe(&exe), "c0ffee12beef");
+    fn window_title_is_branded() {
+        assert_eq!(
+            generate_stealth_window_title(),
+            format!("SAIKO SOLVER v{}", env!("CARGO_PKG_VERSION"))
+        );
         assert_eq!(generate_random_suffix(12).len(), FILE_HEX_LEN);
         let suffix = generate_random_suffix(16);
         assert!(is_hex_str(&suffix, DIR_HEX_LEN));

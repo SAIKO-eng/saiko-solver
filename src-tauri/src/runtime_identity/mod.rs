@@ -149,6 +149,11 @@ pub fn uses_temporary_runtime() -> bool {
     }
 }
 
+/// Window title shown by the OS chrome and taskbar in every mode.
+pub(crate) fn branded_window_title() -> String {
+    format!("SAIKO SOLVER v{}", env!("CARGO_PKG_VERSION"))
+}
+
 pub fn runtime_window_title() -> String {
     #[cfg(target_os = "windows")]
     {
@@ -156,7 +161,7 @@ pub fn runtime_window_title() -> String {
     }
     #[cfg(not(target_os = "windows"))]
     {
-        "Discord Quest Helper".into()
+        branded_window_title()
     }
 }
 
