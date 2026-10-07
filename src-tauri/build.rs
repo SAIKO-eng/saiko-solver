@@ -2,6 +2,9 @@ use std::fs;
 use std::path::Path;
 
 fn main() {
+    // Declare the merged-build cfg so clippy -D warnings does not flag it.
+    println!("cargo::rustc-check-cfg=cfg(saiko_embedded_waybridge)");
+
     // Ensure the data/ directory exists
     let data_dir = Path::new("data");
     if !data_dir.exists() {
