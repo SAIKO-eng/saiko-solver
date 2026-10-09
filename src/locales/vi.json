@@ -10,6 +10,30 @@
     "refresh": "Làm mới",
     "clear": "Xóa"
   },
+  "license": {
+    "title": "Kich hoat SAIKO SOLVER",
+    "subtitle": "Nhap ma kich hoat cua ban de mo khoa ung dung.",
+    "machine_id": "ID may",
+    "machine_id_hint": "Gui ID nay cho nguoi ban de nhan ma kich hoat cua ban.",
+    "code": "Ma kich hoat",
+    "code_placeholder": "Dan ma kich hoat cua ban vao day",
+    "activate": "Kich hoat",
+    "activating": "Dang kich hoat...",
+    "copy": "Sao chep",
+    "activated": "Kich hoat hop le",
+    "expires": "Het han",
+    "lifetime": "Tron doi",
+    "plan": "Goi",
+    "expired_stored": "Giay phep cua ban da het han. Nhap ma moi de tiep tuc.",
+    "invalid_stored": "Giay phep da luu khong hop le. Nhap ma moi de tiep tuc.",
+    "help_footer": "Lien he nguoi ban de mua ma kich hoat.",
+    "error": {
+      "unknown": "Kich hoat that bai. Vui long thu lai.",
+      "signature": "Ma kich hoat khong hop le.",
+      "machine": "Ma kich hoat nay duoc cap cho mot may khac.",
+      "expired": "Giay phep nay da het han."
+    }
+  },
   "auth": {
     "cdp_login": "Đăng nhập bằng ứng dụng Discord",
     "cdp_login_hint": "Dùng ứng dụng Discord mà bạn đã đăng nhập — không cần Token.",

@@ -10,6 +10,30 @@
     "refresh": "Segarkan",
     "clear": "Hapus"
   },
+  "license": {
+    "title": "Aktifkan SAIKO SOLVER",
+    "subtitle": "Masukkan kode aktivasi Anda untuk membuka aplikasi.",
+    "machine_id": "ID Mesin",
+    "machine_id_hint": "Kirim ID ini ke penjual untuk menerima kode aktivasi Anda.",
+    "code": "Kode aktivasi",
+    "code_placeholder": "Tempel kode aktivasi Anda di sini",
+    "activate": "Aktifkan",
+    "activating": "Mengaktifkan...",
+    "copy": "Salin",
+    "activated": "Aktivasi berlaku",
+    "expires": "Berakhir",
+    "lifetime": "Seumur hidup",
+    "plan": "Paket",
+    "expired_stored": "Lisensi Anda telah kedaluwarsa. Masukkan kode baru untuk melanjutkan.",
+    "invalid_stored": "Lisensi tersimpan tidak valid. Masukkan kode baru untuk melanjutkan.",
+    "help_footer": "Hubungi penjual untuk membeli kode aktivasi.",
+    "error": {
+      "unknown": "Aktivasi gagal. Silakan coba lagi.",
+      "signature": "Kode aktivasi tidak valid.",
+      "machine": "Kode aktivasi ini dibuat untuk mesin yang berbeda.",
+      "expired": "Lisensi ini telah kedaluwarsa."
+    }
+  },
   "auth": {
     "cdp_login": "Masuk dengan klien Discord",
     "cdp_login_hint": "Gunakan aplikasi Discord yang sudah Anda masuki — tanpa token.",

@@ -10,6 +10,30 @@
     "refresh": "重新整理",
     "clear": "清除"
   },
+  "license": {
+    "title": "啟用 SAIKO SOLVER",
+    "subtitle": "輸入您的啟用碼以解鎖應用程式。",
+    "machine_id": "機器 ID",
+    "machine_id_hint": "將此 ID 傳送給賣家以取得您的啟用碼。",
+    "code": "啟用碼",
+    "code_placeholder": "在此處貼上您的啟用碼",
+    "activate": "啟用",
+    "activating": "啟用中...",
+    "copy": "複製",
+    "activated": "啟用有效",
+    "expires": "到期時間",
+    "lifetime": "永久",
+    "plan": "方案",
+    "expired_stored": "您的授權已過期。請輸入新代碼以繼續。",
+    "invalid_stored": "儲存的授權無效。請輸入新代碼以繼續。",
+    "help_footer": "請聯絡賣家購買啟用碼。",
+    "error": {
+      "unknown": "啟用失敗，請重試。",
+      "signature": "啟用碼無效。",
+      "machine": "此啟用碼是為另一台機器簽發的。",
+      "expired": "此授權已過期。"
+    }
+  },
   "auth": {
     "cdp_login": "使用 Discord 用戶端登入",
     "cdp_login_hint": "使用你已登入的 Discord 用戶端，無需 Token。",

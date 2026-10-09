@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2.0.0",
   "productName": "SAIKO SOLVER",
   "mainBinaryName": "saiko-solver",
-  "version": "0.10.7",
+  "version": "1.0.5",
   "identifier": "com.saiko.solver",
   "build": {
     "beforeDevCommand": "pnpm run dev",

@@ -10,6 +10,30 @@
     "refresh": "Yenile",
     "clear": "Temizle"
   },
+  "license": {
+    "title": "SAIKO SOLVER'i Etkinlestir",
+    "subtitle": "Uygulamanin kilidini acmak icin aktivasyon kodunuzu girin.",
+    "machine_id": "Makine Kimligi",
+    "machine_id_hint": "Aktivasyon kodunuzu almak icin bu kimligi saticiya gonderin.",
+    "code": "Aktivasyon kodu",
+    "code_placeholder": "Aktivasyon kodunuzu buraya yapistirin",
+    "activate": "Etkinlestir",
+    "activating": "Etkinlestiriliyor...",
+    "copy": "Kopyala",
+    "activated": "Aktivasyon gecerli",
+    "expires": "Bitis tarihi",
+    "lifetime": "Omur boyu",
+    "plan": "Plan",
+    "expired_stored": "Lisansinizin suresi doldu. Devam etmek icin yeni bir kod girin.",
+    "invalid_stored": "Kayitli lisans gecersiz. Devam etmek icin yeni bir kod girin.",
+    "help_footer": "Aktivasyon kodu satin almak icin saticiyla iletisime gecin.",
+    "error": {
+      "unknown": "Aktivasyon basarisiz oldu. Lutfen tekrar deneyin.",
+      "signature": "Aktivasyon kodu gecersiz.",
+      "machine": "Bu aktivasyon kodu farkli bir makine icin duzenlenmis.",
+      "expired": "Bu lisansin suresi dolmus."
+    }
+  },
   "auth": {
     "cdp_login": "Discord istemcisiyle giriş yap",
     "cdp_login_hint": "Zaten giriş yapmış olduğunuz Discord uygulamasını kullanır — token gerekmez.",

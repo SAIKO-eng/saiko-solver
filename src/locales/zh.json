@@ -10,6 +10,30 @@
     "refresh": "刷新",
     "clear": "清除"
   },
+  "license": {
+    "title": "激活 SAIKO SOLVER",
+    "subtitle": "输入您的激活码以解锁应用程序。",
+    "machine_id": "机器 ID",
+    "machine_id_hint": "将此 ID 发送给卖家以获取您的激活码。",
+    "code": "激活码",
+    "code_placeholder": "在此处粘贴您的激活码",
+    "activate": "激活",
+    "activating": "正在激活...",
+    "copy": "复制",
+    "activated": "激活有效",
+    "expires": "到期时间",
+    "lifetime": "永久",
+    "plan": "套餐",
+    "expired_stored": "您的许可证已过期。请输入新代码以继续。",
+    "invalid_stored": "存储的许可证无效。请输入新代码以继续。",
+    "help_footer": "请联系卖家购买激活码。",
+    "error": {
+      "unknown": "激活失败，请重试。",
+      "signature": "激活码无效。",
+      "machine": "此激活码是为另一台机器签发的。",
+      "expired": "此许可证已过期。"
+    }
+  },
   "auth": {
     "cdp_login": "使用 Discord 客户端登录",
     "cdp_login_hint": "使用你已登录的 Discord 客户端，无需 Token。",

@@ -4,10 +4,12 @@ import Home from './views/Home.vue'
 import GameSimulator from './views/GameSimulator.vue'
 import Settings from './views/Settings.vue'
 import Debug from './views/Debug.vue'
+import LicenseActivation from './views/LicenseActivation.vue'
 import TitleBar from './components/TitleBar.vue'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/auth'
 import { useGameIdleStore } from '@/stores/gameIdle'
+import { useLicenseStore } from '@/stores/license'
 import { useVersionStore } from '@/stores/version'
 import { useI18n } from 'vue-i18n'
 import { Moon, Sun, Languages } from 'lucide-vue-next'
@@ -31,6 +33,7 @@ const { t, locale } = useI18n()
 const currentTab = ref<AppTab>('home')
 const authStore = useAuthStore()
 const gameIdleStore = useGameIdleStore()
+const licenseStore = useLicenseStore()
 const authTransitioning = ref(false)
 const immersiveGameIdle = computed(() => currentTab.value === 'game' && (gameIdleStore.isActive || gameIdleStore.loading))
 const showStandardShell = computed(() => (Boolean(authStore.user) || currentTab.value !== 'home') && !immersiveGameIdle.value)
@@ -127,6 +130,9 @@ onMounted(() => {
   // Restore debug mode state
   debugModeEnabled.value = isDebugModeEnabled()
 
+  // Verify the installation license before revealing the app
+  licenseStore.initialize()
+
   // Check for updates
   const versionStore = useVersionStore()
   versionStore.initialize()
@@ -183,7 +189,8 @@ watch(
 </script>
 
 <template>
-  <div class="h-screen bg-background text-foreground font-sans flex flex-col overflow-hidden">
+  <LicenseActivation v-if="licenseStore.initialized && !licenseStore.activated" />
+  <div v-else class="h-screen bg-background text-foreground font-sans flex flex-col overflow-hidden">
     <DiscordCdpExitDialog />
     <TitleBar />
     

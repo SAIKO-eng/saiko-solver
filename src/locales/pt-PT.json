@@ -10,6 +10,30 @@
     "refresh": "Atualizar",
     "clear": "Limpar"
   },
+  "license": {
+    "title": "Ativar o SAIKO SOLVER",
+    "subtitle": "Introduza o seu codigo de ativacao para desbloquear a aplicacao.",
+    "machine_id": "ID da maquina",
+    "machine_id_hint": "Envie este ID ao vendedor para receber o seu codigo de ativacao.",
+    "code": "Codigo de ativacao",
+    "code_placeholder": "Cole aqui o seu codigo de ativacao",
+    "activate": "Ativar",
+    "activating": "A ativar...",
+    "copy": "Copiar",
+    "activated": "A ativacao e valida",
+    "expires": "Expira",
+    "lifetime": "Vitalicio",
+    "plan": "Plano",
+    "expired_stored": "A sua licenca expirou. Introduza um novo codigo para continuar.",
+    "invalid_stored": "A licenca armazenada e invalida. Introduza um novo codigo para continuar.",
+    "help_footer": "Contacte o vendedor para comprar um codigo de ativacao.",
+    "error": {
+      "unknown": "A ativacao falhou. Tente novamente.",
+      "signature": "O codigo de ativacao e invalido.",
+      "machine": "Este codigo de ativacao foi emitido para outra maquina.",
+      "expired": "Esta licenca expirou."
+    }
+  },
   "auth": {
     "cdp_login": "Iniciar sessão com o cliente do Discord",
     "cdp_login_hint": "Use a aplicação do Discord onde já tem sessão iniciada, sem token.",

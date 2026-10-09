@@ -10,6 +10,30 @@
     "refresh": "Refresh",
     "clear": "Clear"
   },
+  "license": {
+    "title": "Activate SAIKO SOLVER",
+    "subtitle": "Enter your activation code to unlock the application.",
+    "machine_id": "Machine ID",
+    "machine_id_hint": "Send this ID to the seller to receive your activation code.",
+    "code": "Activation code",
+    "code_placeholder": "Paste your activation code here",
+    "activate": "Activate",
+    "activating": "Activating...",
+    "copy": "Copy",
+    "activated": "Activation is valid",
+    "expires": "Expires",
+    "lifetime": "Lifetime",
+    "plan": "Plan",
+    "expired_stored": "Your license has expired. Enter a new code to continue.",
+    "invalid_stored": "The stored license is invalid. Enter a new code to continue.",
+    "help_footer": "Contact the seller to purchase an activation code.",
+    "error": {
+      "unknown": "Activation failed. Please try again.",
+      "signature": "The activation code is invalid.",
+      "machine": "This activation code was issued for a different machine.",
+      "expired": "This license has expired."
+    }
+  },
   "auth": {
     "cdp_login": "Log in with Discord Client",
     "cdp_login_hint": "Use the Discord app you're already signed in to — no token needed.",

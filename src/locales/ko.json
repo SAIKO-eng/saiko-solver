@@ -10,6 +10,30 @@
     "refresh": "새로고침",
     "clear": "지우기"
   },
+  "license": {
+    "title": "SAIKO SOLVER 활성화",
+    "subtitle": "활성화 코드를 입력하여 애플리케이션을 잠금 해제하세요.",
+    "machine_id": "기기 ID",
+    "machine_id_hint": "이 ID를 판매자에게 보내 활성화 코드를 받으세요.",
+    "code": "활성화 코드",
+    "code_placeholder": "여기에 활성화 코드를 붙여넣으세요",
+    "activate": "활성화",
+    "activating": "활성화 중...",
+    "copy": "복사",
+    "activated": "활성화가 유효합니다",
+    "expires": "만료",
+    "lifetime": "평생",
+    "plan": "플랜",
+    "expired_stored": "라이선스가 만료되었습니다. 계속하려면 새 코드를 입력하세요.",
+    "invalid_stored": "저장된 라이선스가 유효하지 않습니다. 계속하려면 새 코드를 입력하세요.",
+    "help_footer": "활성화 코드를 구매하려면 판매자에게 문의하세요.",
+    "error": {
+      "unknown": "활성화에 실패했습니다. 다시 시도하세요.",
+      "signature": "활성화 코드가 유효하지 않습니다.",
+      "machine": "이 활성화 코드는 다른 기기용으로 발급되었습니다.",
+      "expired": "이 라이선스는 만료되었습니다."
+    }
+  },
   "auth": {
     "cdp_login": "Discord 클라이언트로 로그인",
     "cdp_login_hint": "이미 로그인된 Discord 앱을 사용합니다. 토큰이 필요 없습니다.",

@@ -62,3 +62,7 @@ reports/
 .workbuddy/
 .codebuddy/
 deliverables/
+
+# License generation secrets
+scripts/license/private.pem
+scripts/license/public.pem
