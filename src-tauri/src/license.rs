@@ -274,7 +274,6 @@ pub fn activate_license(app: tauri::AppHandle, code: String) -> Result<LicenseSt
 #[cfg(test)]
 mod tests {
     use super::*;
-    use base64::Engine as _;
     use rsa::pkcs1::DecodeRsaPrivateKey;
     use rsa::RsaPrivateKey;
 
