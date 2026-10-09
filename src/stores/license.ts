@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import {
   activateLicense as apiActivateLicense,
@@ -10,12 +10,14 @@ export const useLicenseStore = defineStore('license', () => {
   const status = ref<LicenseStatus | null>(null)
   const loading = ref(false)
   const lastError = ref('')
+  const initialized = ref(false)
 
-  const initialized = computed(() => status.value !== null || loading.value)
-  const activated = computed(() => status.value?.state === 'active')
+  function isActivated(): boolean {
+    return status.value?.state === 'active'
+  }
 
   async function initialize() {
-    if (status.value) return
+    if (initialized.value) return
     loading.value = true
     lastError.value = ''
     try {
@@ -24,6 +26,7 @@ export const useLicenseStore = defineStore('license', () => {
       lastError.value = error instanceof Error ? error.message : String(error)
     } finally {
       loading.value = false
+      initialized.value = true
     }
   }
 
@@ -45,7 +48,7 @@ export const useLicenseStore = defineStore('license', () => {
     loading,
     lastError,
     initialized,
-    activated,
+    isActivated,
     initialize,
     activate,
   }

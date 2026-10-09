@@ -189,7 +189,7 @@ watch(
 </script>
 
 <template>
-  <LicenseActivation v-if="licenseStore.initialized && !licenseStore.activated" />
+  <LicenseActivation v-if="licenseStore.initialized && !licenseStore.isActivated()" />
   <div v-else class="h-screen bg-background text-foreground font-sans flex flex-col overflow-hidden">
     <DiscordCdpExitDialog />
     <TitleBar />

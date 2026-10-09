@@ -82,7 +82,7 @@ onMounted(async () => {
         </p>
       </div>
 
-      <div v-if="licenseStore.activated" class="mt-6 space-y-4">
+      <div v-if="licenseStore.isActivated()" class="mt-6 space-y-4">
         <div class="flex items-center justify-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 py-4">
           <ShieldCheck class="h-5 w-5 text-green-500" />
           <span class="text-sm font-medium text-green-600 dark:text-green-400">
