@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAIKO SOLVER — License Generator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    width: 100%;
+    max-width: 640px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .header img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    font-size: 14px;
+    color: #888;
+    margin-top: 4px;
+  }
+  .card {
+    background: #12121a;
+    border: 1px solid #1e1e2e;
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .field {
+    margin-bottom: 20px;
+  }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    padding: 12px 14px;
+    background: #0d0d14;
+    border: 1px solid #252535;
+    border-radius: 10px;
+    color: #e0e0e0;
+    font-size: 14px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    transition: border-color 0.2s;
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    outline: none;
+    border-color: #6366f1;
+  }
+  .field textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: #6366f1;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+  }
+  .btn:hover { background: #4f46e5; }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+  }
+  .output {
+    margin-top: 24px;
+    display: none;
+  }
+  .output.show { display: block; }
+  .output-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .output-box {
+    background: #0d0d14;
+    border: 1px solid #252535;
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    word-break: break-all;
+    color: #a5b4fc;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .copy-btn {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: #1e1e2e;
+    border: 1px solid #252535;
+    border-radius: 8px;
+    color: #a0a0b0;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover {
+    background: #252535;
+    color: #e0e0e0;
+  }
+  .copy-btn.copied {
+    background: #064e3b;
+    border-color: #065f46;
+    color: #6ee7b7;
+  }
+  .error {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #450a0a;
+    border: 1px solid #7f1d1d;
+    border-radius: 10px;
+    color: #fca5a5;
+    font-size: 13px;
+    display: none;
+  }
+  .error.show { display: block; }
+  .info {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #0c1929;
+    border: 1px solid #1e3a5f;
+    border-radius: 10px;
+    color: #7dd3fc;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #1e1e2e;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #888;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236366f1'/%3E%3Ctext x='32' y='42' font-size='28' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'%3ES%3C/text%3E%3C/svg%3E" alt="SAIKO">
+    <h1>SAIKO SOLVER</h1>
+    <p>License Code Generator</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>Private Key (PEM)</label>
+      <textarea id="privateKey" placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;...&#10;-----END RSA PRIVATE KEY-----"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Machine ID</label>
+      <input type="text" id="machineId" placeholder="A1B2C3D4E5F6A1B2C3D4E5F6" maxlength="24">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Duration (days)</label>
+        <input type="number" id="days" value="30" min="0" placeholder="30">
+      </div>
+      <div class="field">
+        <label>Plan</label>
+        <input type="text" id="plan" value="basic" placeholder="basic">
+      </div>
+    </div>
+
+    <button class="btn" id="generateBtn" onclick="generate()">Generate License Code</button>
+
+    <div class="error" id="error"></div>
+
+    <div class="output" id="output">
+      <div class="output-label">License Code</div>
+      <div class="output-box" id="outputBox"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy to Clipboard</button>
+    </div>
+
+    <div class="info">
+      <strong>Note:</strong> Keep your private key secure. Anyone with access to it can generate valid codes.
+      The machine ID is shown on the customer's activation screen.
+    </div>
+  </div>
+</div>
+
+<script>
+function pkcs1ToPkcs8(pkcs1Der) {
+  const pkcs1Length = pkcs1Der.length;
+  const totalLength = 22 + pkcs1Length;
+  const header = new Uint8Array([
+    0x30, 0x82, (totalLength >> 8) & 0xff, totalLength & 0xff,
+    0x02, 0x01, 0x00,
+    0x30, 0x0d,
+    0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01,
+    0x05, 0x00,
+    0x04, 0x82, (pkcs1Length >> 8) & 0xff, pkcs1Length & 0xff
+  ]);
+  return new Uint8Array([...header, ...pkcs1Der]);
+}
+
+function pemToDer(pem) {
+  const lines = pem.trim().split('\n');
+  const b64 = lines
+    .filter(l => !l.startsWith('-----'))
+    .join('');
+  const bin = atob(b64);
+  const der = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) der[i] = bin.charCodeAt(i);
+  return der;
+}
+
+function base64urlEncode(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function hexEncode(bytes) {
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function generate() {
+  const errorEl = document.getElementById('error');
+  const outputEl = document.getElementById('output');
+  const btn = document.getElementById('generateBtn');
+  errorEl.classList.remove('show');
+  outputEl.classList.remove('show');
+
+  const privateKeyPem = document.getElementById('privateKey').value.trim();
+  const machineId = document.getElementById('machineId').value.trim().toUpperCase();
+  const days = parseInt(document.getElementById('days').value) || 0;
+  const plan = document.getElementById('plan').value.trim();
+
+  if (!privateKeyPem) { showError('Please paste your private key.'); return; }
+  if (!machineId) { showError('Please enter the Machine ID.'); return; }
+  if (machineId.length !== 24) { showError('Machine ID must be exactly 24 characters.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  try {
+    const pkcs1Der = pemToDer(privateKeyPem);
+    const pkcs8Der = pkcs1ToPkcs8(pkcs1Der);
+
+    const privateKey = await crypto.subtle.importKey(
+      'pkcs8',
+      pkcs8Der,
+      { name: 'RSA-PKCS1-v1_5', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+
+    const expiry = days === 0 ? 0 : Math.floor(Date.now() / 1000) + days * 86400;
+
+    const payload = JSON.stringify({
+      v: 1,
+      m: machineId.toLowerCase(),
+      e: expiry,
+      p: plan
+    });
+
+    const message = `v1|${machineId.toLowerCase()}|${expiry}|${plan}`;
+    const messageBytes = new TextEncoder().encode(message);
+
+    const signature = await crypto.subtle.sign(
+      'RSA-PKCS1-v1_5',
+      privateKey,
+      messageBytes
+    );
+
+    const code = `${base64urlEncode(new TextEncoder().encode(payload))}.${base64urlEncode(new Uint8Array(signature))}`;
+
+    document.getElementById('outputBox').textContent = code;
+    outputEl.classList.add('show');
+  } catch (e) {
+    showError('Error: ' + (e.message || 'Invalid private key or parameters.'));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generate License Code';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function copyCode() {
+  const code = document.getElementById('outputBox').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy to Clipboard';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>
