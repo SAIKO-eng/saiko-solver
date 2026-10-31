@@ -1,23 +1,23 @@
 <div align="center">
 
-<h1>Discord Quest Helper</h1>
+<h1>SAIKO SOLVER</h1>
 
 <p align="center">
-  <img src="src-tauri/icons/icon.png" alt="Discord Quest Helper logo" width="150">
+  <img src="src-tauri/icons/icon.png" alt="SAIKO SOLVER logo" width="150">
 </p>
 
-<p><strong>🎮 Automate your Discord Quests with one click</strong></p>
+<p><strong>🎮 Complete your Discord Quests with one click</strong></p>
 
-<p>Complete Discord video, stream, and game quests automatically while you focus on what matters.</p>
+<p>Automate Discord video, stream, and game quests while you focus on what matters.</p>
 
 <p>⭐ <strong>If you find this helpful, please give it a star!</strong> ⭐</p>
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/Masterain98/discord-quest-helper/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-blue.svg)](https://github.com/SAIKO-eng/saiko-solver/releases)
 [![Tauri](https://img.shields.io/badge/tauri-2-blue.svg)](https://tauri.app/)
 [![Vue](https://img.shields.io/badge/vue-3.5-green.svg)](https://vuejs.org/)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
-[![GitHub Release](https://img.shields.io/github/v/release/Masterain98/discord-quest-helper?label=latest%20release&color=41b883)](https://github.com/Masterain98/discord-quest-helper/releases/latest)
+[![GitHub Release](https://img.shields.io/github/v/release/SAIKO-eng/saiko-solver?label=latest%20release&color=41b883)](https://github.com/SAIKO-eng/saiko-solver/releases/latest)
 
 <br>
 
@@ -32,39 +32,17 @@
 
 ### Download & Run
 
-Download the latest build from [GitHub Releases](https://github.com/Masterain98/discord-quest-helper/releases/latest).
+Download the latest build from [GitHub Releases](https://github.com/SAIKO-eng/saiko-solver/releases/latest).
+
+No activation code, license key, or account is required — download, extract, and run.
 
 | Platform | Release file | Instructions |
 | --- | --- | --- |
-| Windows x64 Installer | `discord-quest-helper-Windows-x64-<version>-setup.msi` | Open the MSI installer. |
-| Windows x64 Portable | `discord-quest-helper-Windows-x64-<version>-portable.zip` | Extract the ZIP and run `discord-quest-helper.exe`. |
-| macOS Apple Silicon Installer | `discord-quest-helper-MacOS-arm64-<version>.dmg` | Open the DMG and drag the app to Applications. If macOS blocks it, run the quarantine-removal command below. |
-| Linux x86_64 Installer | `discord-quest-helper-Linux-x86_64-<version>.deb` | Install the Debian package with the command below. |
-| Linux x86_64 Portable | `discord-quest-helper-Linux-x86_64-<version>.AppImage` | Make the AppImage executable and run it with the commands below. |
-
-On macOS, remove the quarantine attribute if needed:
-
-```bash
-xattr -cr "/Applications/Discord Quest Helper.app"
-```
-
-On Linux, install the Debian package like this:
-
-```bash
-sudo apt install ./discord-quest-helper-Linux-x86_64-<version>.deb
-```
-
-Or run the portable AppImage like this:
-
-```bash
-chmod +x discord-quest-helper-Linux-x86_64-<version>.AppImage
-./discord-quest-helper-Linux-x86_64-<version>.AppImage
-```
-
-If an older AppImage becomes blank after login and logs `GStreamer element autoaudiosink not found`, see [Linux AppImage troubleshooting](docs/linux-appimage-compatibility.md). Rebuilt packages include the media plugins used by animated reward previews.
+| Windows x64 Installer | `SAIKO-SOLVER-Windows-x64-<version>-setup.msi` | Open the MSI installer. |
+| Windows x64 Portable | `SAIKO-SOLVER-Windows-x64-<version>-portable.zip` | Extract the ZIP and run `saiko-solver.exe`. |
 
 > [!NOTE]
-> Release binaries are built and published by GitHub Actions from the repository source. Linux release packages target x86_64; macOS releases currently target Apple Silicon.
+> Release binaries are built and published by GitHub Actions from the repository source. Current release packages target Windows x64.
 
 ### Sign in
 
@@ -84,7 +62,6 @@ If an older AppImage becomes blank after login and logs `GStreamer element autoa
 
 - ⚡ **Flexible Login** — Auto-detect supported local Discord profiles, connect through CDP, or enter a token manually.
 - 🖥️ **Discord & Vesktop Support** — Select the desktop client or installation used for CDP login, including custom paths.
-- 🐧 **Linux Desktop Support** — Available as an x86_64 AppImage or Debian package.
 - 🎮 **Zero-Download Game Simulation** — Complete game quests without downloading or installing the actual game.
 - 📺 **Video & Stream Automation** — Start once and let quest progress update in the background.
 - 🔍 **Advanced Quest Filters** — Filter by reward type, completion status, and more.
@@ -108,7 +85,7 @@ If an older AppImage becomes blank after login and logs `GStreamer element autoa
 ## 🏗️ Architecture
 
 ```text
-Discord Quest Helper
+SAIKO SOLVER
 ├─ Vue 3 + Vite frontend
 │  ├─ Views: Home, Game Simulator, Settings, Debug
 │  ├─ Pinia stores and composables for auth, quests, settings, and UI state
@@ -135,11 +112,9 @@ Discord Quest Helper
 
 The frontend communicates with the Rust backend through Tauri IPC. The backend owns Discord networking, local credential extraction, CDP sessions, quest execution, process cleanup, and platform-specific integration.
 
-Explore the codebase with [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Masterain98/discord-quest-helper)
-
 ## 🔒 Security
 
-- **Tokens are kept in memory by the helper** — The app does not intentionally persist your Discord token to disk.
+- **Tokens are kept in memory** — The app does not intentionally persist your Discord token to disk.
 - **Encrypted local extraction** — Auto-detection reads supported Discord profiles through platform-native protection where available.
 - **Platform-native credentials** — Windows DPAPI, macOS Keychain, and Linux Secret Service are used by the local extraction paths.
 - **HTTPS for Discord API requests** — Network requests use secure HTTPS connections.
@@ -158,8 +133,9 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 MIT License — see the [LICENSE](LICENSE) file.
 
-
 ## 🙏 Credits
+
+SAIKO SOLVER is a fork of [discord-quest-helper](https://github.com/Masterain98/discord-quest-helper) by Masterain98, used under the MIT License.
 
 **Inspiration & Resources**
 - [markterence/discord-quest-completer](https://github.com/markterence/discord-quest-completer)
