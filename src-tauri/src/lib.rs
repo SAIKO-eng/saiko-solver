@@ -1807,7 +1807,6 @@ async fn claim_quest_reward(
         .map_err(|e| format!("Failed to claim quest reward: {}", e))
 }
 
-mod license;
 mod rpc;
 mod runner;
 
@@ -2291,10 +2290,7 @@ pub fn run() {
             navigate_discord_spa,
             platform_capabilities::get_platform_capabilities,
             runtime_identity::get_runtime_identity_status,
-            runtime_identity::get_runtime_identity_audit,
-            license::get_license_status,
-            license::activate_license,
-            license::get_machine_id
+            runtime_identity::get_runtime_identity_audit
         ])
         .on_window_event(|_window, event| {
             if let tauri::WindowEvent::Destroyed = event {
