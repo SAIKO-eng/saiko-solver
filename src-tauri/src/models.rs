@@ -10,6 +10,9 @@ pub struct DiscordUser {
     /// Nitro subscription type: 0=None, 1=Nitro Classic, 2=Nitro, 3=Nitro Basic
     #[serde(default)]
     pub premium_type: Option<u8>,
+    /// Public account flags bitfield (`public_flags`), used to derive profile badges.
+    #[serde(default)]
+    pub public_flags: Option<u64>,
 }
 
 /// Simplified Quest model for frontend display

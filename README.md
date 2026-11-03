@@ -143,6 +143,7 @@ SAIKO SOLVER is a fork of [discord-quest-helper](https://github.com/Masterain98/
 - [taisrisk/Discord-Quest-Helper](https://github.com/taisrisk/Discord-Quest-Helper)
 - [aamiaa/CompleteDiscordQuest.md](https://gist.github.com/aamiaa/204cd9d42013ded9faf646fae7f89fbb)
 - [docs.discord.food](https://docs.discord.food/)
+- Badge artwork from [mezotv/discord-badges](https://github.com/mezotv/discord-badges), used under the MIT License.
 
 **Technologies**
 - [Tauri](https://tauri.app/) • [Vue.js](https://vuejs.org/) • [Pinia](https://pinia.vuejs.org/) • [vue-i18n](https://vue-i18n.intlify.dev/) • [shadcn-vue](https://www.shadcn-vue.com/) • [TailwindCSS](https://tailwindcss.com/) • [Lucide Icons](https://lucide.dev/)

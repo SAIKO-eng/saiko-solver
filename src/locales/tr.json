@@ -68,7 +68,8 @@
     "home": "Ana sayfa",
     "game_simulator": "Oyun Simülatörü",
     "settings": "Ayarlar",
-    "debug": "Hata ayıklama"
+    "debug": "Hata ayıklama",
+    "badges": "Rozetler"
   },
   "home": {
     "dashboard_title": "Quest Kontrol Paneli",
@@ -552,5 +553,24 @@
     "close_only": "Yalnızca bu uygulamayı kapat",
     "restore_and_close": "Kapat ve Discord'u normal başlat",
     "helper_error": "Discord yeniden başlatma yardımcısı başlatılamadı. Discord'u tamamen kapatıp elle yeniden açmanız gerekebilir."
+  },
+  "badges": {
+    "title": "Profil Rozetleri",
+    "subtitle": "Discord’un hesabınız için bildirdiği rozetlerin ve hesap yaşının salt okunur özeti.",
+    "refresh": "Yenile",
+    "loading": "Rozetler yükleniyor…",
+    "error": "Rozet verileri yüklenemedi.",
+    "account_age": {
+      "title": "Hesap yaşı",
+      "created": "{date} tarihinde oluşturuldu",
+      "years": "{count} yaşında",
+      "none": "Bir yıldan az",
+      "maxed": "Maksimum hesap yaşı rozetine ulaşıldı.",
+      "next": "Sıradaki: {years} yılda {name}"
+    },
+    "profile_badges": "Discord rozetleri",
+    "earned": "Kazanıldı",
+    "locked": "Bu hesapta yok",
+    "api_note": "Discord'un genel API'si yalnızca klasik profil bayraklarını, Nitro durumunu ve hesap oluşturma tarihini sunar. Oyun Süresi, Oyun Çeşitliliği ve görev rozetleri Discord tarafından gizli olarak hesaplanır ve burada kullanılamaz, bu yüzden gösterilmez."
   }
 }

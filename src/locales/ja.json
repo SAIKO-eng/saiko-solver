@@ -68,7 +68,8 @@
     "home": "ホーム",
     "game_simulator": "ゲームシミュレーター",
     "settings": "設定",
-    "debug": "デバッグ"
+    "debug": "デバッグ",
+    "badges": "バッジ"
   },
   "home": {
     "dashboard_title": "Quest ダッシュボード",
@@ -552,5 +553,24 @@
     "close_only": "このアプリのみ閉じる",
     "restore_and_close": "アプリを閉じて Discord を通常モードで再起動",
     "helper_error": "Discord 再起動ヘルパーを開始できませんでした。Discord を完全に終了して手動で再起動してください。"
+  },
+  "badges": {
+    "title": "プロフィールバッジ",
+    "subtitle": "Discord がアカウントについて報告するバッジとアカウント年齢の読み取り専用の概要です。",
+    "refresh": "更新",
+    "loading": "バッジを読み込み中…",
+    "error": "バッジデータを読み込めませんでした。",
+    "account_age": {
+      "title": "アカウント年齢",
+      "created": "{date} に作成",
+      "years": "{count} 年",
+      "none": "1年未満",
+      "maxed": "アカウント年齢バッジは最大です。",
+      "next": "次: {name}（{years} 年）"
+    },
+    "profile_badges": "Discord バッジ",
+    "earned": "取得済み",
+    "locked": "このアカウントにはありません",
+    "api_note": "Discord の公開 API は、従来のプロフィールフラグ、Nitro の状態、アカウント作成日のみを公開します。ゲーム時間・ゲームの多様性・クエストのバッジは Discord が非公開で計算しており、ここでは利用できないため表示していません。"
   }
 }

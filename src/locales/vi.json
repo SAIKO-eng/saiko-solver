@@ -68,7 +68,8 @@
     "home": "Trang chủ",
     "game_simulator": "Trình mô phỏng trò chơi",
     "settings": "Cài đặt",
-    "debug": "Gỡ lỗi"
+    "debug": "Gỡ lỗi",
+    "badges": "Huy hiệu"
   },
   "home": {
     "dashboard_title": "Quest Trang tổng quan",
@@ -552,5 +553,24 @@
     "close_only": "Chỉ đóng ứng dụng này",
     "restore_and_close": "Đóng và khởi động Discord bình thường",
     "helper_error": "Không thể khởi động trình trợ giúp khởi động lại Discord. Hãy thoát hoàn toàn Discord rồi mở lại theo cách thủ công."
+  },
+  "badges": {
+    "title": "Huy hiệu hồ sơ",
+    "subtitle": "Tóm tắt chỉ đọc về huy hiệu và tuổi tài khoản mà Discord báo cáo cho tài khoản của bạn.",
+    "refresh": "Làm mới",
+    "loading": "Đang tải huy hiệu…",
+    "error": "Không thể tải dữ liệu huy hiệu.",
+    "account_age": {
+      "title": "Tuổi tài khoản",
+      "created": "Tạo ngày {date}",
+      "years": "{count} năm",
+      "none": "Dưới một năm",
+      "maxed": "Đã đạt huy hiệu tuổi tài khoản tối đa.",
+      "next": "Tiếp theo: {name} khi {years} năm"
+    },
+    "profile_badges": "Huy hiệu Discord",
+    "earned": "Đã nhận",
+    "locked": "Không có trên tài khoản này",
+    "api_note": "API công khai của Discord chỉ cung cấp các cờ hồ sơ cổ điển, trạng thái Nitro và ngày tạo tài khoản. Huy hiệu Thời gian chơi, Đa dạng trò chơi và nhiệm vụ do Discord tính toán riêng và không khả dụng ở đây, nên không được hiển thị."
   }
 }

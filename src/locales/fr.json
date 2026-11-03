@@ -68,7 +68,8 @@
     "home": "Accueil",
     "game_simulator": "Simulateur de jeu",
     "settings": "Paramètres",
-    "debug": "Débogage"
+    "debug": "Débogage",
+    "badges": "Badges"
   },
   "home": {
     "dashboard_title": "Quest Tableau de bord",
@@ -552,5 +553,24 @@
     "close_only": "Fermer uniquement cette application",
     "restore_and_close": "Fermer et redémarrer Discord normalement",
     "helper_error": "L'assistant de redémarrage de Discord n'a pas pu démarrer. Fermez complètement Discord et rouvrez-le manuellement."
+  },
+  "badges": {
+    "title": "Badges de profil",
+    "subtitle": "Résumé en lecture seule des badges et de l'ancienneté du compte que Discord indique pour votre compte.",
+    "refresh": "Actualiser",
+    "loading": "Chargement des badges…",
+    "error": "Impossible de charger les données des badges.",
+    "account_age": {
+      "title": "Ancienneté du compte",
+      "created": "Créé le {date}",
+      "years": "{count} ans",
+      "none": "Moins d'un an",
+      "maxed": "Badge d'ancienneté maximal atteint.",
+      "next": "Suivant : {name} à {years} ans"
+    },
+    "profile_badges": "Badges Discord",
+    "earned": "Obtenu",
+    "locked": "Absent de ce compte",
+    "api_note": "L'API publique de Discord n'expose que les flags classiques du profil, le statut Nitro et la date de création du compte. Les badges de temps de jeu, de variété de jeux et de quêtes sont calculés en interne par Discord et ne sont pas disponibles ici ; ils ne sont donc pas affichés."
   }
 }

@@ -68,7 +68,8 @@
     "home": "Startseite",
     "game_simulator": "Spielsimulator",
     "settings": "Einstellungen",
-    "debug": "Debuggen"
+    "debug": "Debuggen",
+    "badges": "Abzeichen"
   },
   "home": {
     "dashboard_title": "Quest Dashboard",
@@ -552,5 +553,24 @@
     "close_only": "Nur diese App schließen",
     "restore_and_close": "App schließen und Discord normal neu starten",
     "helper_error": "Der Discord-Neustarthelfer konnte nicht gestartet werden. Beende Discord vollständig und öffne es manuell erneut."
+  },
+  "badges": {
+    "title": "Profilabzeichen",
+    "subtitle": "Schreibgeschützte Übersicht der Abzeichen und des Kontodatums, die Discord für dein Konto meldet.",
+    "refresh": "Aktualisieren",
+    "loading": "Abzeichen werden geladen…",
+    "error": "Abzeichendaten konnten nicht geladen werden.",
+    "account_age": {
+      "title": "Kontoalter",
+      "created": "Erstellt am {date}",
+      "years": "{count} Jahre alt",
+      "none": "Unter einem Jahr",
+      "maxed": "Höchstes Kontoalter-Abzeichen erreicht.",
+      "next": "Nächstes: {name} mit {years} Jahren"
+    },
+    "profile_badges": "Discord-Abzeichen",
+    "earned": "Erhalten",
+    "locked": "Nicht auf diesem Konto",
+    "api_note": "Die öffentliche Discord-API liefert nur klassische Profil-Flags, den Nitro-Status und das Erstellungsdatum des Kontos. Spielzeit-, Spielvielfalt- und Quest-Abzeichen werden von Discord intern berechnet und sind hier nicht verfügbar, daher werden sie nicht angezeigt."
   }
 }

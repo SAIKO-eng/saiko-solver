@@ -3,11 +3,12 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useI18n } from 'vue-i18n'
 
-export type AppTab = 'home' | 'game' | 'settings' | 'debug'
+export type AppTab = 'home' | 'game' | 'badges' | 'settings' | 'debug'
 
 const props = defineProps<{
   current: AppTab
   debugEnabled: boolean
+  authenticated: boolean
 }>()
 
 const emit = defineEmits<{
@@ -19,6 +20,7 @@ const { t } = useI18n()
 const items = [
   { key: 'home' as const, label: 'nav.home' },
   { key: 'game' as const, label: 'nav.game_simulator' },
+  { key: 'badges' as const, label: 'nav.badges', authOnly: true },
   { key: 'settings' as const, label: 'nav.settings' },
   { key: 'debug' as const, label: 'nav.debug', debugOnly: true },
 ]
@@ -28,7 +30,7 @@ const items = [
   <nav class="flex min-w-0 items-center gap-1 overflow-x-auto" :aria-label="t('general.title')">
     <Button
       v-for="item in items"
-      v-show="!item.debugOnly || props.debugEnabled"
+      v-show="(!item.authOnly || props.authenticated) && (!item.debugOnly || props.debugEnabled)"
       :key="item.key"
       size="sm"
       variant="ghost"

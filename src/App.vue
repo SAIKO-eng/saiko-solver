@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import Home from './views/Home.vue'
 import GameSimulator from './views/GameSimulator.vue'
+import Badges from './views/Badges.vue'
 import Settings from './views/Settings.vue'
 import Debug from './views/Debug.vue'
 import TitleBar from './components/TitleBar.vue'
@@ -141,7 +142,7 @@ onUnmounted(() => {
 
 function handleAppNavigate(e: Event) {
   const tab = (e as CustomEvent<string>).detail
-  if (tab === 'home' || tab === 'game' || tab === 'settings' || tab === 'debug') {
+  if (tab === 'home' || tab === 'game' || tab === 'badges' || tab === 'settings' || tab === 'debug') {
     currentTab.value = tab
   }
 }
@@ -258,6 +259,7 @@ watch(
               <AppNavigation
                 :current="currentTab"
                 :debug-enabled="debugModeEnabled"
+                :authenticated="Boolean(authStore.user)"
                 @navigate="currentTab = $event"
               />
 
@@ -280,6 +282,7 @@ watch(
                     <AppNavigation
                       :current="currentTab"
                       :debug-enabled="debugModeEnabled"
+                      :authenticated="Boolean(authStore.user)"
                       @navigate="currentTab = $event"
                     />
 
@@ -313,6 +316,8 @@ watch(
           </template>
         
           <GameSimulator v-else-if="currentTab === 'game'" />
+
+          <Badges v-else-if="currentTab === 'badges'" />
         
           <Settings
             v-else-if="currentTab === 'settings'"

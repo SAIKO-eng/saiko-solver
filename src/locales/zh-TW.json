@@ -68,7 +68,8 @@
     "home": "首頁",
     "game_simulator": "遊戲模擬",
     "settings": "設定",
-    "debug": "偵錯"
+    "debug": "偵錯",
+    "badges": "徽章"
   },
   "home": {
     "dashboard_title": "Quest 儀表板",
@@ -552,5 +553,24 @@
     "close_only": "僅關閉本應用程式",
     "restore_and_close": "關閉本應用程式並將 Discord 重新啟動至一般模式",
     "helper_error": "無法啟動 Discord 重新啟動助手。你可能需要手動完全結束並重新開啟 Discord。"
+  },
+  "badges": {
+    "title": "個人檔案徽章",
+    "subtitle": "唯讀顯示 Discord 為你的帳號回報的徽章與帳號年齡摘要。",
+    "refresh": "重新整理",
+    "loading": "正在載入徽章…",
+    "error": "無法載入徽章資料。",
+    "account_age": {
+      "title": "帳號年齡",
+      "created": "建立於 {date}",
+      "years": "{count} 年",
+      "none": "未滿一年",
+      "maxed": "已達成最高帳號年齡徽章。",
+      "next": "下一個：{name}（{years} 年）"
+    },
+    "profile_badges": "Discord 徽章",
+    "earned": "已獲得",
+    "locked": "此帳號沒有",
+    "api_note": "Discord 公開 API 僅提供傳統個人檔案旗標、Nitro 狀態與帳號建立日期。遊戲時數、遊戲多樣性與任務徽章由 Discord 私下計算，此處無法取得，因此不予顯示。"
   }
 }

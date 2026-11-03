@@ -68,7 +68,8 @@
     "home": "홈",
     "game_simulator": "게임 시뮬레이터",
     "settings": "설정",
-    "debug": "디버그"
+    "debug": "디버그",
+    "badges": "배지"
   },
   "home": {
     "dashboard_title": "Quest 대시보드",
@@ -552,5 +553,24 @@
     "close_only": "이 앱만 닫기",
     "restore_and_close": "앱을 닫고 Discord를 일반 모드로 다시 시작",
     "helper_error": "Discord 재시작 도우미를 시작하지 못했습니다. Discord를 완전히 종료한 후 수동으로 다시 여세요."
+  },
+  "badges": {
+    "title": "프로필 배지",
+    "subtitle": "Discord가 계정에 대해 알려주는 배지와 계정 나이를 읽기 전용으로 요약합니다.",
+    "refresh": "새로고침",
+    "loading": "배지를 불러오는 중…",
+    "error": "배지 데이터를 불러오지 못했습니다.",
+    "account_age": {
+      "title": "계정 나이",
+      "created": "{date} 생성",
+      "years": "{count}년",
+      "none": "1년 미만",
+      "maxed": "최대 계정 나이 배지에 도달했습니다.",
+      "next": "다음: {name} ({years}년)"
+    },
+    "profile_badges": "Discord 배지",
+    "earned": "획득함",
+    "locked": "이 계정에 없음",
+    "api_note": "Discord 공개 API는 기존 프로필 플래그, Nitro 상태, 계정 생성일만 제공합니다. 게임 시간, 게임 다양성, 퀘스트 배지는 Discord가 비공개로 계산하며 여기서는 사용할 수 없으므로 표시하지 않습니다."
   }
 }

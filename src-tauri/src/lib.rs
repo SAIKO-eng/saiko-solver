@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod badges;
 mod cdp_client;
 mod cdp_game_spoof;
 mod cdp_quest;
@@ -395,6 +396,7 @@ mod auth_progress_tests {
                 avatar: None,
                 global_name: None,
                 premium_type: None,
+                public_flags: None,
             },
         }
     }
@@ -752,6 +754,25 @@ async fn ensure_cdp_account_consistency(
         "account_mismatch: Helper is signed in as {expected_name} ({}), but {owner} is signed in as {actual_name} ({}). Sign both into the same account before starting a CDP task.",
         expected.id, actual.id
     ))
+}
+
+/// Profile badge overview for the signed-in account.
+#[tauri::command]
+async fn get_badge_overview(state: State<'_, AppState>) -> Result<badges::BadgeOverview, String> {
+    let client = {
+        let guard = state.client.lock().unwrap();
+        guard
+            .as_ref()
+            .ok_or_else(|| "Not logged in".to_string())?
+            .clone()
+    };
+
+    let user = client
+        .get_current_user()
+        .await
+        .map_err(|e| format!("Failed to get user info: {}", e))?;
+
+    Ok(badges::overview(&user))
 }
 
 /// Get quest list (via HTTP API /quests/@me endpoint)
@@ -2225,6 +2246,7 @@ pub fn run() {
             auto_login_via_cdp,
             get_quests,
             get_quests_full,
+            get_badge_overview,
             start_video_quest,
             start_stream_quest,
             start_game_heartbeat_quest,

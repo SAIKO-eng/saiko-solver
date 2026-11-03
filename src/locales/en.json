@@ -68,7 +68,8 @@
     "home": "Home",
     "game_simulator": "Game Simulator",
     "settings": "Settings",
-    "debug": "Debug"
+    "debug": "Debug",
+    "badges": "Badges"
   },
   "home": {
     "dashboard_title": "Quest Dashboard",
@@ -116,9 +117,7 @@
     "current_orbs": "Current Orbs",
     "nitro_next_orbs_title": "Monthly Nitro Orbs — next claim countdown",
     "nitro_next_orbs_days": "Next Orbs airdrop in {days} days",
-
     "nitro_next_orbs_hours": "Next Orbs airdrop in {hours} hours",
-
     "nitro_next_orbs_minutes": "Next Orbs airdrop in {minutes} minutes",
     "claim_reward": "Claim Reward",
     "claim_navigated": "Discord has been redirected to the quest page. Please claim your reward there.",
@@ -554,5 +553,24 @@
     "close_only": "Close this app only",
     "restore_and_close": "Close app and restart Discord normally",
     "helper_error": "The Discord restart helper could not be started. You may need to fully quit and reopen Discord manually."
+  },
+  "badges": {
+    "title": "Profile Badges",
+    "subtitle": "Read-only summary of the badges and account age Discord reports for your account.",
+    "refresh": "Refresh",
+    "loading": "Loading badges…",
+    "error": "Could not load badge data.",
+    "account_age": {
+      "title": "Account age",
+      "created": "Created {date}",
+      "years": "{count} years old",
+      "none": "Under a year",
+      "maxed": "Maximum account-age badge reached.",
+      "next": "Next: {name} at {years} years"
+    },
+    "profile_badges": "Discord badges",
+    "earned": "Earned",
+    "locked": "Not on this account",
+    "api_note": "Discord's public API only exposes classic profile flags, Nitro status and the account creation date. Game Time, Game Variety and quest badges are calculated privately by Discord and are not available here, so they are not shown."
   }
 }

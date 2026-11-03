@@ -68,7 +68,8 @@
     "home": "首页",
     "game_simulator": "游戏模拟",
     "settings": "设置",
-    "debug": "调试"
+    "debug": "调试",
+    "badges": "徽章"
   },
   "home": {
     "dashboard_title": "任务仪表盘",
@@ -116,9 +117,7 @@
     "current_orbs": "当前 Orbs",
     "nitro_next_orbs_title": "Nitro 每月 Orbs — 下次领取倒计时",
     "nitro_next_orbs_days": "下次 Orbs 空投剩余 {days} 天",
-
     "nitro_next_orbs_hours": "下次 Orbs 空投剩余 {hours} 小时",
-
     "nitro_next_orbs_minutes": "下次 Orbs 空投剩余 {minutes} 分钟",
     "claim_reward": "领取奖励",
     "claim_navigated": "Discord 已跳转到对应任务页面，请在 Discord 中领取奖励。",
@@ -554,5 +553,24 @@
     "close_only": "仅关闭本应用",
     "restore_and_close": "关闭本应用并重启Discord到一般模式",
     "helper_error": "无法启动 Discord 重启助手。你可能需要手动完全退出并重新打开 Discord。"
+  },
+  "badges": {
+    "title": "个人资料徽章",
+    "subtitle": "只读显示 Discord 为你的账号返回的徽章和账号年龄摘要。",
+    "refresh": "刷新",
+    "loading": "正在加载徽章…",
+    "error": "无法加载徽章数据。",
+    "account_age": {
+      "title": "账号年龄",
+      "created": "创建于 {date}",
+      "years": "{count} 年",
+      "none": "不满一年",
+      "maxed": "已达到最高账号年龄徽章。",
+      "next": "下一个：{name}（{years} 年）"
+    },
+    "profile_badges": "Discord 徽章",
+    "earned": "已获得",
+    "locked": "此账号没有",
+    "api_note": "Discord 公共 API 仅提供传统个人资料标志、Nitro 状态和账号创建日期。游戏时长、游戏多样性和任务徽章由 Discord 私下计算，此处不可用，因此不显示。"
   }
 }
