@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Emblemas do perfil",
-    "subtitle": "Resumo somente leitura dos emblemas e da idade da conta que o Discord informa para a sua conta.",
+    "subtitle": "Visualização somente leitura dos emblemas da sua conta, com escalas de idade da conta, tempo de jogo e variedade de jogos.",
     "refresh": "Atualizar",
     "loading": "Carregando emblemas…",
     "error": "Não foi possível carregar os dados dos emblemas.",
@@ -571,6 +571,20 @@
     "profile_badges": "Emblemas do Discord",
     "earned": "Conquistado",
     "locked": "Não está nesta conta",
-    "api_note": "A API pública do Discord expõe apenas os flags clássicos do perfil, o status do Nitro e a data de criação da conta. Emblemas de tempo de jogo, variedade de jogos e missões são calculados internamente pelo Discord e não estão disponíveis aqui, por isso não são exibidos."
+    "api_note": "Os emblemas são lidos diretamente do endpoint de perfil do Discord com o seu próprio token neste dispositivo. A idade da conta vem da data de criação. O progresso de Tempo de Jogo e Variedade de Jogos é registrado localmente pelo SAIKO SOLVER e não é o contador do Discord. Nada é enviado ou compartilhado.",
+    "tracks_title": "Emblemas por nível",
+    "unavailable_title": "Emblemas sem progresso legível",
+    "level": "Nível {level}",
+    "next": "Próximo: {name} com {target}",
+    "maxed": "Nível máximo alcançado.",
+    "hours": "{value} h",
+    "games": "{count} jogos",
+    "game_time_source": "Com base nas sessões registradas pelo SAIKO SOLVER neste dispositivo. O Discord conta o tempo de jogo separadamente, então isso pode diferir do emblema no seu perfil.",
+    "game_variety_source": "Com base nos jogos distintos registrados pelo SAIKO SOLVER neste dispositivo. O Discord conta os jogos separadamente, então isso pode diferir do emblema no seu perfil.",
+    "streaming_note": "O Discord não expõe horas de transmissão. Esta escala é apenas informativa; o emblema é concedido pelo Discord quando você transmite para outras pessoas.",
+    "gifting_note": "O Discord não expõe a quantidade de presentes. Esta escala é apenas informativa; o emblema é concedido pelo Discord quando você envia presentes da Loja ou de uma lista de desejos.",
+    "profile_badges_empty": "O Discord não retornou nenhum emblema de perfil para esta conta.",
+    "fallback_note": "Não foi possível buscar os emblemas do perfil ao vivo, então os emblemas derivados dos flags públicos da conta são exibidos.",
+    "not_reached": "Ainda não alcançado"
   }
 }

@@ -552,6 +552,69 @@ impl DiscordApiClient {
         Ok(user)
     }
 
+    /// Read the profile badges Discord returns for a user.
+    ///
+    /// This uses Discord's undocumented read-only profile endpoint. The call is
+    /// made with the user's own token from this machine, and only the `badges`
+    /// array is kept; nothing is stored or forwarded anywhere.
+    pub async fn get_profile_badges(&self, user_id: &str) -> Result<Vec<ProfileBadge>> {
+        use crate::logger::{log, LogCategory, LogLevel};
+
+        let url = format!(
+            "{}/users/{}/profile?with_mutual_guilds=false&with_mutual_friends=false",
+            DISCORD_API_BASE, user_id
+        );
+        log(
+            LogLevel::Debug,
+            LogCategory::Api,
+            "Requesting profile badges",
+            Some(&url),
+        );
+
+        let response = self.request(Method::GET, &url).send().await.map_err(|e| {
+            log(
+                LogLevel::Error,
+                LogCategory::Api,
+                "Network request failed for profile badges",
+                Some(&e.to_string()),
+            );
+            anyhow::anyhow!("Request for profile badges failed: {}", e)
+        })?;
+
+        let status = response.status();
+        if !status.is_success() {
+            let body = response.text().await.unwrap_or_default();
+            let truncated_body: String = body.chars().take(200).collect();
+            log(
+                LogLevel::Error,
+                LogCategory::Api,
+                &format!(
+                    "API error for profile badges: {} - {}",
+                    status, truncated_body
+                ),
+                None,
+            );
+            anyhow::bail!("Failed to get profile badges: {}", status);
+        }
+
+        let payload: serde_json::Value = response
+            .json()
+            .await
+            .context("Failed to parse profile payload")?;
+        let badges = payload
+            .get("badges")
+            .and_then(|value| value.as_array())
+            .map(|entries| {
+                entries
+                    .iter()
+                    .filter_map(|entry| serde_json::from_value::<ProfileBadge>(entry.clone()).ok())
+                    .collect()
+            })
+            .unwrap_or_default();
+
+        Ok(badges)
+    }
+
     /// Get progress for a specific quest.
     ///
     /// Returns `(progress_seconds, completed)` by fetching the full quest list

@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Huy hiệu hồ sơ",
-    "subtitle": "Tóm tắt chỉ đọc về huy hiệu và tuổi tài khoản mà Discord báo cáo cho tài khoản của bạn.",
+    "subtitle": "Chế độ xem chỉ đọc các huy hiệu trên tài khoản, kèm cấp độ tuổi tài khoản, thời gian chơi và đa dạng trò chơi.",
     "refresh": "Làm mới",
     "loading": "Đang tải huy hiệu…",
     "error": "Không thể tải dữ liệu huy hiệu.",
@@ -571,6 +571,20 @@
     "profile_badges": "Huy hiệu Discord",
     "earned": "Đã nhận",
     "locked": "Không có trên tài khoản này",
-    "api_note": "API công khai của Discord chỉ cung cấp các cờ hồ sơ cổ điển, trạng thái Nitro và ngày tạo tài khoản. Huy hiệu Thời gian chơi, Đa dạng trò chơi và nhiệm vụ do Discord tính toán riêng và không khả dụng ở đây, nên không được hiển thị."
+    "api_note": "Huy hiệu được đọc trực tiếp từ endpoint hồ sơ của Discord bằng token của chính bạn trên thiết bị này. Tuổi tài khoản lấy từ ngày tạo. Tiến độ Thời gian chơi và Đa dạng trò chơi do SAIKO SOLVER theo dõi cục bộ và không phải bộ đếm của Discord. Không có gì được tải lên hay chia sẻ.",
+    "tracks_title": "Huy hiệu theo cấp",
+    "unavailable_title": "Huy hiệu không đọc được tiến độ",
+    "level": "Cấp {level}",
+    "next": "Tiếp theo: {name} ở {target}",
+    "maxed": "Đã đạt cấp tối đa.",
+    "hours": "{value} giờ",
+    "games": "{count} trò chơi",
+    "game_time_source": "Dựa trên các phiên SAIKO SOLVER ghi lại trên thiết bị này. Discord đếm thời gian chơi riêng, nên có thể khác với huy hiệu trên hồ sơ của bạn.",
+    "game_variety_source": "Dựa trên các trò chơi khác nhau mà SAIKO SOLVER ghi lại trên thiết bị này. Discord đếm trò chơi riêng, nên có thể khác với huy hiệu trên hồ sơ của bạn.",
+    "streaming_note": "Discord không công bố số giờ phát trực tiếp. Thang này chỉ để tham khảo; Discord trao huy hiệu khi bạn phát trực tiếp cho người khác.",
+    "gifting_note": "Discord không công bố số quà tặng. Thang này chỉ để tham khảo; Discord trao huy hiệu khi bạn gửi quà từ Cửa hàng hoặc danh sách mong muốn.",
+    "profile_badges_empty": "Discord không trả về huy hiệu hồ sơ nào cho tài khoản này.",
+    "fallback_note": "Không thể lấy huy hiệu hồ sơ trực tiếp, nên hiển thị huy hiệu suy ra từ cờ tài khoản công khai.",
+    "not_reached": "Chưa đạt"
   }
 }

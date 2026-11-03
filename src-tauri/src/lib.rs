@@ -758,7 +758,10 @@ async fn ensure_cdp_account_consistency(
 
 /// Profile badge overview for the signed-in account.
 #[tauri::command]
-async fn get_badge_overview(state: State<'_, AppState>) -> Result<badges::BadgeOverview, String> {
+async fn get_badge_overview(
+    state: State<'_, AppState>,
+    app: tauri::AppHandle,
+) -> Result<badges::BadgeOverview, String> {
     let client = {
         let guard = state.client.lock().unwrap();
         guard
@@ -772,7 +775,30 @@ async fn get_badge_overview(state: State<'_, AppState>) -> Result<badges::BadgeO
         .await
         .map_err(|e| format!("Failed to get user info: {}", e))?;
 
-    Ok(badges::overview(&user))
+    // The profile endpoint is undocumented and can be unavailable for private
+    // profiles, so a failure falls back to the public flags instead of failing
+    // the whole view.
+    let (profile_badges, profile_badges_available) = match client.get_profile_badges(&user.id).await
+    {
+        Ok(badges) => (badges, true),
+        Err(_) => (Vec::new(), false),
+    };
+
+    let history = match simulation_history::SimulationHistory::file_path(&app) {
+        Ok(path) => state
+            .simulation_history
+            .entries_for_user(&path, &user.id)
+            .await
+            .unwrap_or_default(),
+        Err(_) => Vec::new(),
+    };
+
+    Ok(badges::overview(
+        &user,
+        profile_badges,
+        profile_badges_available,
+        &history,
+    ))
 }
 
 /// Get quest list (via HTTP API /quests/@me endpoint)

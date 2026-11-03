@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "个人资料徽章",
-    "subtitle": "只读显示 Discord 为你的账号返回的徽章和账号年龄摘要。",
+    "subtitle": "只读查看账号上的徽章，并显示账号年龄、游戏时长和游戏多样性的等级。",
     "refresh": "刷新",
     "loading": "正在加载徽章…",
     "error": "无法加载徽章数据。",
@@ -571,6 +571,20 @@
     "profile_badges": "Discord 徽章",
     "earned": "已获得",
     "locked": "此账号没有",
-    "api_note": "Discord 公共 API 仅提供传统个人资料标志、Nitro 状态和账号创建日期。游戏时长、游戏多样性和任务徽章由 Discord 私下计算，此处不可用，因此不显示。"
+    "api_note": "徽章使用你在此设备上的令牌直接从 Discord 个人资料端点读取。账号年龄来自你的账号创建日期。游戏时长和游戏多样性的进度由 SAIKO SOLVER 在本地跟踪，并非 Discord 的计数器。不会上传或分享任何内容。",
+    "tracks_title": "等级徽章",
+    "unavailable_title": "无法读取进度的徽章",
+    "level": "等级 {level}",
+    "next": "下一个：{name}（{target}）",
+    "maxed": "已达到最高等级。",
+    "hours": "{value} 小时",
+    "games": "{count} 款游戏",
+    "game_time_source": "基于 SAIKO SOLVER 在此设备上记录的会话。Discord 另行统计游玩时间，因此可能与你个人资料上的徽章不同。",
+    "game_variety_source": "基于 SAIKO SOLVER 在此设备上记录的不同游戏。Discord 另行统计游戏数量，因此可能与你个人资料上的徽章不同。",
+    "streaming_note": "Discord 不公开直播时长。此等级仅供参考；当你向其他用户直播时，Discord 会授予徽章。",
+    "gifting_note": "Discord 不公开赠送数量。此等级仅供参考；当你从商店或愿望单送出礼物时，Discord 会授予徽章。",
+    "profile_badges_empty": "Discord 未返回此账号的任何个人资料徽章。",
+    "fallback_note": "无法获取实时个人资料徽章，因此改为显示由公开账号标志推导出的徽章。",
+    "not_reached": "尚未达到"
   }
 }

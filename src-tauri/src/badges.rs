@@ -1,13 +1,21 @@
 //! Profile badge overview.
 //!
-//! Discord only exposes classic account badges through the public API
-//! (`public_flags` on the user object). Leveled badges such as Game Time and
-//! Game Variety are computed server-side and are not part of the public
-//! payload, so this module reports only what can be derived truthfully:
-//! the flag-based badges, the Nitro badge, and the account-age tier which is
-//! derived from the creation timestamp encoded in the user snowflake.
+//! Three data sources are merged here, and each one is labelled for what it is:
+//!
+//! * Discord's read-only profile endpoint, which reports the badges that are
+//!   actually on the account (`profile_badges`).
+//! * The public user payload (`public_flags`, Nitro type), used as a fallback
+//!   when the profile call is unavailable.
+//! * The account creation timestamp encoded in the user snowflake, which gives
+//!   the account-age tier.
+//!
+//! Leveled badges such as Game Time and Game Variety are computed privately by
+//! Discord and are not readable through any API. Their progress here is derived
+//! from the play sessions this app recorded locally, so it is reported as
+//! app-tracked data rather than as Discord's own counters.
 
-use crate::models::DiscordUser;
+use crate::models::{DiscordUser, ProfileBadge};
+use crate::simulation_history::GameSimulationHistoryEntry;
 use serde::Serialize;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -15,8 +23,14 @@ use std::time::{SystemTime, UNIX_EPOCH};
 const DISCORD_EPOCH_MS: i64 = 1_420_070_400_000;
 const MS_PER_DAY: f64 = 86_400_000.0;
 const DAYS_PER_YEAR: f64 = 365.2425;
+const SECONDS_PER_HOUR: f64 = 3_600.0;
 /// Account age badges stop at ten years.
 const MAX_ACCOUNT_AGE_LEVEL: u8 = 10;
+
+/// Minimum hours for each Game Time tier, as Discord lists them.
+pub const GAME_TIME_MIN_HOURS: [u64; 10] = [1, 5, 20, 75, 150, 300, 500, 1_000, 2_000, 5_000];
+/// Minimum distinct games for each Game Variety tier.
+pub const GAME_VARIETY_MIN_GAMES: [u64; 10] = [2, 5, 10, 15, 20, 30, 40, 60, 80, 100];
 
 pub const FLAG_STAFF: u64 = 1 << 0;
 pub const FLAG_PARTNER: u64 = 1 << 1;
@@ -48,6 +62,23 @@ pub struct BadgeOverview {
     pub account_age_progress: f64,
     /// Years required for the next tier, `None` once the badge is maxed.
     pub account_age_next_years: Option<u8>,
+    /// Badges Discord reports on the profile, exactly as returned.
+    pub profile_badges: Vec<ProfileBadge>,
+    /// `false` when the profile endpoint could not be reached and the badge
+    /// list falls back to `earned_badge_ids`.
+    pub profile_badges_available: bool,
+    /// Total playtime recorded by this app for the account, in seconds.
+    pub tracked_game_seconds: u64,
+    /// Distinct games with recorded playtime in this app.
+    pub tracked_game_count: u32,
+    pub game_time_hours: f64,
+    pub game_time_level: u8,
+    pub game_time_progress: f64,
+    pub game_time_next_hours: Option<u64>,
+    pub game_variety_level: u8,
+    pub game_variety_progress: f64,
+    pub game_variety_next_games: Option<u64>,
+    /// Flag/Nitro-derived badges. Used when `profile_badges_available` is false.
     pub earned_badge_ids: Vec<String>,
 }
 
@@ -78,6 +109,35 @@ pub fn account_age_progress(days: i64) -> f64 {
         return 1.0;
     }
     (years - years.floor()).clamp(0.0, 1.0)
+}
+
+/// Current tier, progress towards the next tier, and the next threshold.
+///
+/// A value below the first threshold maps to level 0. Once every threshold is
+/// reached the progress is 1.0 and there is no next threshold.
+pub fn leveled_progress(value: f64, thresholds: &[u64]) -> (u8, f64, Option<u64>) {
+    let value = value.max(0.0);
+    let mut level = 0usize;
+    for threshold in thresholds {
+        if value >= *threshold as f64 {
+            level += 1;
+        } else {
+            break;
+        }
+    }
+
+    if level >= thresholds.len() {
+        return (thresholds.len() as u8, 1.0, None);
+    }
+
+    let floor = if level == 0 {
+        0.0
+    } else {
+        thresholds[level - 1] as f64
+    };
+    let ceiling = thresholds[level] as f64;
+    let progress = ((value - floor) / (ceiling - floor)).clamp(0.0, 1.0);
+    (level as u8, progress, Some(thresholds[level]))
 }
 
 /// Badge ids earned through `public_flags` and the Nitro subscription.
@@ -131,8 +191,14 @@ pub fn earned_badge_ids(flags: u64, premium_type: u8) -> Vec<String> {
     ids
 }
 
-/// Build the badge overview for a user payload.
-pub fn overview(user: &DiscordUser) -> BadgeOverview {
+/// Build the badge overview from the user payload, the profile badge list and
+/// the locally recorded play history.
+pub fn overview(
+    user: &DiscordUser,
+    profile_badges: Vec<ProfileBadge>,
+    profile_badges_available: bool,
+    history: &[GameSimulationHistoryEntry],
+) -> BadgeOverview {
     let now_ms = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|duration| duration.as_millis() as i64)
@@ -142,10 +208,22 @@ pub fn overview(user: &DiscordUser) -> BadgeOverview {
     let age_days = days_between(now_ms, created_ms);
     let level = account_age_level(age_days);
     let premium_type = user.premium_type.unwrap_or(0);
+    let flags = user.public_flags.unwrap_or(0);
+
+    let tracked_game_seconds: u64 = history.iter().map(|entry| entry.total_seconds).sum();
+    let tracked_game_count = history
+        .iter()
+        .filter(|entry| entry.total_seconds > 0)
+        .count() as u32;
+    let game_time_hours = tracked_game_seconds as f64 / SECONDS_PER_HOUR;
+    let (game_time_level, game_time_progress, game_time_next_hours) =
+        leveled_progress(game_time_hours, &GAME_TIME_MIN_HOURS);
+    let (game_variety_level, game_variety_progress, game_variety_next_games) =
+        leveled_progress(tracked_game_count as f64, &GAME_VARIETY_MIN_GAMES);
 
     BadgeOverview {
         user_id: user.id.clone(),
-        flags: user.public_flags.unwrap_or(0),
+        flags,
         premium_type,
         account_created_ms: created_ms,
         account_age_days: age_days,
@@ -157,7 +235,18 @@ pub fn overview(user: &DiscordUser) -> BadgeOverview {
         } else {
             Some(level + 1)
         },
-        earned_badge_ids: earned_badge_ids(user.public_flags.unwrap_or(0), premium_type),
+        profile_badges,
+        profile_badges_available,
+        tracked_game_seconds,
+        tracked_game_count,
+        game_time_hours,
+        game_time_level,
+        game_time_progress,
+        game_time_next_hours,
+        game_variety_level,
+        game_variety_progress,
+        game_variety_next_games,
+        earned_badge_ids: earned_badge_ids(flags, premium_type),
     }
 }
 
@@ -178,6 +267,15 @@ mod tests {
             global_name: None,
             premium_type: Some(premium_type),
             public_flags: Some(flags),
+        }
+    }
+
+    fn history_entry(app_id: &str, seconds: u64) -> GameSimulationHistoryEntry {
+        GameSimulationHistoryEntry {
+            app_id: app_id.to_string(),
+            app_name: format!("Game {}", app_id),
+            total_seconds: seconds,
+            updated_at: "2026-01-01T00:00:00Z".to_string(),
         }
     }
 
@@ -224,12 +322,82 @@ mod tests {
     }
 
     #[test]
+    fn leveled_progress_matches_thresholds() {
+        assert_eq!(
+            leveled_progress(0.0, &GAME_TIME_MIN_HOURS),
+            (0, 0.0, Some(1))
+        );
+        assert_eq!(leveled_progress(1.0, &GAME_TIME_MIN_HOURS).0, 1);
+        assert_eq!(leveled_progress(4.5, &GAME_TIME_MIN_HOURS).0, 1);
+        assert_eq!(leveled_progress(5.0, &GAME_TIME_MIN_HOURS).0, 2);
+        assert_eq!(
+            leveled_progress(5_000.0, &GAME_TIME_MIN_HOURS),
+            (10, 1.0, None)
+        );
+    }
+
+    #[test]
+    fn leveled_progress_reports_next_threshold() {
+        let (level, progress, next) = leveled_progress(2.5, &GAME_TIME_MIN_HOURS);
+        assert_eq!(level, 1);
+        assert_eq!(next, Some(5));
+        assert!((progress - 0.375).abs() < f64::EPSILON);
+    }
+
+    #[test]
     fn overview_uses_user_flags_and_age() {
         let created = 1_600_000_000_000;
-        let overview = overview(&user(&snowflake_for(created), FLAG_PARTNER, 0));
+        let overview = overview(
+            &user(&snowflake_for(created), FLAG_PARTNER, 0),
+            Vec::new(),
+            false,
+            &[],
+        );
         assert_eq!(overview.flags, FLAG_PARTNER);
         assert_eq!(overview.account_created_ms, created);
         assert!(overview.earned_badge_ids.contains(&"partner".to_string()));
         assert!(overview.account_age_next_years.is_some());
+        assert!(!overview.profile_badges_available);
+    }
+
+    #[test]
+    fn overview_aggregates_tracked_playtime() {
+        let created = 1_600_000_000_000;
+        let history = vec![
+            history_entry("1", 3_600),
+            history_entry("2", 3_600),
+            history_entry("3", 0),
+        ];
+        let overview = overview(
+            &user(&snowflake_for(created), 0, 0),
+            Vec::new(),
+            true,
+            &history,
+        );
+        assert_eq!(overview.tracked_game_seconds, 7_200);
+        assert_eq!(overview.tracked_game_count, 2);
+        assert_eq!(overview.game_time_hours, 2.0);
+        assert_eq!(overview.game_time_level, 1);
+        assert_eq!(overview.game_variety_level, 1);
+        assert_eq!(overview.game_variety_next_games, Some(5));
+    }
+
+    #[test]
+    fn overview_passes_profile_badges_through() {
+        let created = 1_600_000_000_000;
+        let badge = ProfileBadge {
+            id: "quest_completed".to_string(),
+            description: "Completed a Quest".to_string(),
+            icon: "abc".to_string(),
+            link: None,
+        };
+        let overview = overview(
+            &user(&snowflake_for(created), 0, 0),
+            vec![badge.clone()],
+            true,
+            &[],
+        );
+        assert!(overview.profile_badges_available);
+        assert_eq!(overview.profile_badges, vec![badge]);
     }
 }

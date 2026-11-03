@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Profilabzeichen",
-    "subtitle": "Schreibgeschützte Übersicht der Abzeichen und des Kontodatums, die Discord für dein Konto meldet.",
+    "subtitle": "Schreibgeschützte Ansicht der Abzeichen deines Kontos, mit Stufen für Kontoalter, Spielzeit und Spielvielfalt.",
     "refresh": "Aktualisieren",
     "loading": "Abzeichen werden geladen…",
     "error": "Abzeichendaten konnten nicht geladen werden.",
@@ -571,6 +571,20 @@
     "profile_badges": "Discord-Abzeichen",
     "earned": "Erhalten",
     "locked": "Nicht auf diesem Konto",
-    "api_note": "Die öffentliche Discord-API liefert nur klassische Profil-Flags, den Nitro-Status und das Erstellungsdatum des Kontos. Spielzeit-, Spielvielfalt- und Quest-Abzeichen werden von Discord intern berechnet und sind hier nicht verfügbar, daher werden sie nicht angezeigt."
+    "api_note": "Abzeichen werden direkt über Discords Profil-Endpunkt mit deinem eigenen Token auf diesem Gerät gelesen. Das Kontoalter stammt aus deinem Erstellungsdatum. Der Fortschritt bei Spielzeit und Spielvielfalt wird lokal von SAIKO SOLVER erfasst und ist nicht Discords eigener Zähler. Es wird nichts hochgeladen oder geteilt.",
+    "tracks_title": "Stufenabzeichen",
+    "unavailable_title": "Abzeichen ohne lesbaren Fortschritt",
+    "level": "Stufe {level}",
+    "next": "Nächstes: {name} bei {target}",
+    "maxed": "Höchste Stufe erreicht.",
+    "hours": "{value} Std.",
+    "games": "{count} Spiele",
+    "game_time_source": "Basierend auf Sitzungen, die SAIKO SOLVER auf diesem Gerät aufgezeichnet hat. Discord zählt die Spielzeit separat, daher kann dies vom Abzeichen in deinem Profil abweichen.",
+    "game_variety_source": "Basierend auf den verschiedenen Spielen, die SAIKO SOLVER auf diesem Gerät aufgezeichnet hat. Discord zählt Spiele separat, daher kann dies vom Abzeichen in deinem Profil abweichen.",
+    "streaming_note": "Discord gibt keine Streaming-Stunden an. Diese Stufe dient nur als Referenz; das Abzeichen vergibt Discord, wenn du für andere streamst.",
+    "gifting_note": "Discord gibt keine Verschenk-Zahlen an. Diese Stufe dient nur als Referenz; das Abzeichen vergibt Discord, wenn du Geschenke im Shop oder über eine Wunschliste sendest.",
+    "profile_badges_empty": "Discord hat für dieses Konto keine Profilabzeichen zurückgegeben.",
+    "fallback_note": "Die Live-Profilabzeichen konnten nicht geladen werden, daher werden Abzeichen aus den öffentlichen Kontofahnen angezeigt.",
+    "not_reached": "Noch nicht erreicht"
   }
 }

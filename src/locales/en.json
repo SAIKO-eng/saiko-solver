@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Profile Badges",
-    "subtitle": "Read-only summary of the badges and account age Discord reports for your account.",
+    "subtitle": "Read-only view of the badges on your account, with leveled tracks for account age, Game Time and Game Variety.",
     "refresh": "Refresh",
     "loading": "Loading badges…",
     "error": "Could not load badge data.",
@@ -571,6 +571,20 @@
     "profile_badges": "Discord badges",
     "earned": "Earned",
     "locked": "Not on this account",
-    "api_note": "Discord's public API only exposes classic profile flags, Nitro status and the account creation date. Game Time, Game Variety and quest badges are calculated privately by Discord and are not available here, so they are not shown."
+    "api_note": "Badges are read directly from Discord's profile endpoint with your own token on this machine. Account age comes from your account creation date. Game Time and Game Variety progress is tracked locally by SAIKO SOLVER and is not Discord's own counter. Nothing is uploaded or shared.",
+    "tracks_title": "Leveled badges",
+    "unavailable_title": "Badges without readable progress",
+    "level": "Level {level}",
+    "next": "Next: {name} at {target}",
+    "maxed": "Maximum level reached.",
+    "hours": "{value} h",
+    "games": "{count} games",
+    "game_time_source": "Based on sessions recorded by SAIKO SOLVER on this device. Discord counts playtime separately, so this may differ from the badge on your profile.",
+    "game_variety_source": "Based on the distinct games recorded by SAIKO SOLVER on this device. Discord counts games separately, so this may differ from the badge on your profile.",
+    "streaming_note": "Discord does not expose streaming hours. This track is shown for reference only; the badge is granted by Discord when you stream to other users.",
+    "gifting_note": "Discord does not expose gift counts. This track is shown for reference only; the badge is granted by Discord when you send gifts from the Shop or a wishlist.",
+    "profile_badges_empty": "Discord did not return any profile badges for this account.",
+    "fallback_note": "The live profile badges could not be fetched, so badges derived from the public account flags are shown instead.",
+    "not_reached": "Not reached yet"
   }
 }

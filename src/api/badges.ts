@@ -1,6 +1,15 @@
 import { invoke } from '@tauri-apps/api/core'
 
-/** Badge overview computed by the Rust backend from the Discord user payload. */
+/** One badge Discord reports on the account's profile. */
+export interface ProfileBadge {
+  id: string
+  description: string
+  /** Icon hash, resolved through Discord's badge-icon CDN. */
+  icon: string
+  link: string | null
+}
+
+/** Badge overview computed by the Rust backend from Discord data and local history. */
 export interface BadgeOverview {
   userId: string
   /** `public_flags` bitfield from the Discord user object. */
@@ -17,6 +26,23 @@ export interface BadgeOverview {
   accountAgeProgress: number
   /** Years needed for the next tier, `null` once maxed. */
   accountAgeNextYears: number | null
+  /** Badges Discord reports on the profile, exactly as returned. */
+  profileBadges: ProfileBadge[]
+  /** `false` when the profile endpoint was unavailable and flags are used instead. */
+  profileBadgesAvailable: boolean
+  /** Playtime recorded by this app for the account, in seconds. */
+  trackedGameSeconds: number
+  /** Distinct games with recorded playtime in this app. */
+  trackedGameCount: number
+  gameTimeHours: number
+  /** 0 = under one hour, 10 = 5,000 hours or more. */
+  gameTimeLevel: number
+  gameTimeProgress: number
+  gameTimeNextHours: number | null
+  /** 0 = fewer than two games, 10 = 100 games or more. */
+  gameVarietyLevel: number
+  gameVarietyProgress: number
+  gameVarietyNextGames: number | null
   earnedBadgeIds: string[]
 }
 

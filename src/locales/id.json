@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Lencana Profil",
-    "subtitle": "Ringkasan hanya-baca untuk lencana dan usia akun yang dilaporkan Discord untuk akunmu.",
+    "subtitle": "Tampilan hanya-baca lencana di akunmu, dengan tingkat usia akun, Waktu Bermain, dan Variasi Game.",
     "refresh": "Segarkan",
     "loading": "Memuat lencana…",
     "error": "Tidak dapat memuat data lencana.",
@@ -571,6 +571,20 @@
     "profile_badges": "Lencana Discord",
     "earned": "Didapat",
     "locked": "Tidak ada di akun ini",
-    "api_note": "API publik Discord hanya menampilkan flag profil klasik, status Nitro, dan tanggal pembuatan akun. Lencana Waktu Bermain, Variasi Game, dan misi dihitung secara privat oleh Discord dan tidak tersedia di sini, jadi tidak ditampilkan."
+    "api_note": "Lencana dibaca langsung dari endpoint profil Discord dengan tokenmu sendiri di perangkat ini. Usia akun berasal dari tanggal pembuatan akunmu. Progres Waktu Bermain dan Variasi Game dilacak secara lokal oleh SAIKO SOLVER dan bukan penghitung Discord. Tidak ada yang diunggah atau dibagikan.",
+    "tracks_title": "Lencana bertingkat",
+    "unavailable_title": "Lencana tanpa progres yang bisa dibaca",
+    "level": "Tingkat {level}",
+    "next": "Berikutnya: {name} pada {target}",
+    "maxed": "Tingkat maksimum tercapai.",
+    "hours": "{value} jam",
+    "games": "{count} game",
+    "game_time_source": "Berdasarkan sesi yang dicatat SAIKO SOLVER di perangkat ini. Discord menghitung waktu bermain secara terpisah, jadi bisa berbeda dari lencana di profilmu.",
+    "game_variety_source": "Berdasarkan game berbeda yang dicatat SAIKO SOLVER di perangkat ini. Discord menghitung game secara terpisah, jadi bisa berbeda dari lencana di profilmu.",
+    "streaming_note": "Discord tidak menampilkan jam streaming. Tingkat ini hanya untuk referensi; lencana diberikan Discord saat kamu streaming ke pengguna lain.",
+    "gifting_note": "Discord tidak menampilkan jumlah hadiah. Tingkat ini hanya untuk referensi; lencana diberikan Discord saat kamu mengirim hadiah dari Toko atau daftar keinginan.",
+    "profile_badges_empty": "Discord tidak mengembalikan lencana profil untuk akun ini.",
+    "fallback_note": "Lencana profil langsung tidak dapat diambil, jadi lencana dari flag akun publik ditampilkan sebagai gantinya.",
+    "not_reached": "Belum tercapai"
   }
 }

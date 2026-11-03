@@ -65,6 +65,7 @@ No activation code, license key, or account is required — download, extract, a
 - 🎮 **Zero-Download Game Simulation** — Complete game quests without downloading or installing the actual game.
 - 📺 **Video & Stream Automation** — Start once and let quest progress update in the background.
 - 🔍 **Advanced Quest Filters** — Filter by reward type, completion status, and more.
+- 🏅 **Profile Badges** — Read the badges Discord reports for your account, plus account-age, Game Time and Game Variety tracks with honest local progress.
 - 👥 **Multi-Account Support** — Manage multiple Discord accounts in one app.
 - 🌏 **Multi-language** — English, Simplified Chinese, Traditional Chinese, Japanese, Korean, Russian, Spanish, German, French, Indonesian, Polish, Portuguese, Thai, Turkish, and Vietnamese.
 
@@ -87,7 +88,7 @@ No activation code, license key, or account is required — download, extract, a
 ```text
 SAIKO SOLVER
 ├─ Vue 3 + Vite frontend
-│  ├─ Views: Home, Game Simulator, Settings, Debug
+│  ├─ Views: Home, Game Simulator, Badges, Settings, Debug
 │  ├─ Pinia stores and composables for auth, quests, settings, and UI state
 │  └─ src/api/tauri.ts — typed Tauri IPC client
 │

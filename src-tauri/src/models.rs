@@ -15,6 +15,21 @@ pub struct DiscordUser {
     pub public_flags: Option<u64>,
 }
 
+/// One entry of the read-only `badges` array returned by Discord's profile endpoint.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ProfileBadge {
+    /// Stable badge id such as `staff`, `premium_tenure_12_month` or `quest_completed`.
+    pub id: String,
+    #[serde(default)]
+    pub description: String,
+    /// Icon hash, resolved through `https://cdn.discordapp.com/badge-icons/{icon}.png`.
+    #[serde(default)]
+    pub icon: String,
+    #[serde(default)]
+    pub link: Option<String>,
+}
+
 /// Simplified Quest model for frontend display
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[allow(dead_code)]

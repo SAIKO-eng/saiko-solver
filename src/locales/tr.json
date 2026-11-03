@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Profil Rozetleri",
-    "subtitle": "Discord’un hesabınız için bildirdiği rozetlerin ve hesap yaşının salt okunur özeti.",
+    "subtitle": "Hesabınızdaki rozetlerin salt okunur görünümü; hesap yaşı, oyun süresi ve oyun çeşitliliği seviyeleriyle birlikte.",
     "refresh": "Yenile",
     "loading": "Rozetler yükleniyor…",
     "error": "Rozet verileri yüklenemedi.",
@@ -571,6 +571,20 @@
     "profile_badges": "Discord rozetleri",
     "earned": "Kazanıldı",
     "locked": "Bu hesapta yok",
-    "api_note": "Discord'un genel API'si yalnızca klasik profil bayraklarını, Nitro durumunu ve hesap oluşturma tarihini sunar. Oyun Süresi, Oyun Çeşitliliği ve görev rozetleri Discord tarafından gizli olarak hesaplanır ve burada kullanılamaz, bu yüzden gösterilmez."
+    "api_note": "Rozetler bu cihazdaki kendi tokeninizle doğrudan Discord'un profil endpoint'inden okunur. Hesap yaşı oluşturulma tarihinizden gelir. Oyun Süresi ve Oyun Çeşitliliği ilerlemesi SAIKO SOLVER tarafından yerel olarak izlenir ve Discord'un kendi sayacı değildir. Hiçbir şey yüklenmez veya paylaşılmaz.",
+    "tracks_title": "Seviyeli rozetler",
+    "unavailable_title": "İlerlemesi okunamayan rozetler",
+    "level": "Seviye {level}",
+    "next": "Sıradaki: {target} ile {name}",
+    "maxed": "Maksimum seviyeye ulaşıldı.",
+    "hours": "{value} sa",
+    "games": "{count} oyun",
+    "game_time_source": "Bu cihazda SAIKO SOLVER tarafından kaydedilen oturumlara dayanır. Discord oyun süresini ayrı sayar, bu yüzden profilinizdeki rozetten farklı olabilir.",
+    "game_variety_source": "Bu cihazda SAIKO SOLVER tarafından kaydedilen farklı oyunlara dayanır. Discord oyunları ayrı sayar, bu yüzden profilinizdeki rozetten farklı olabilir.",
+    "streaming_note": "Discord yayın saatlerini paylaşmaz. Bu seviye yalnızca bilgi amaçlıdır; rozet, başkalarına yayın yaptığınızda Discord tarafından verilir.",
+    "gifting_note": "Discord hediye sayısını paylaşmaz. Bu seviye yalnızca bilgi amaçlıdır; rozet, Mağaza veya istek listesinden hediye gönderdiğinizde Discord tarafından verilir.",
+    "profile_badges_empty": "Discord bu hesap için profil rozeti döndürmedi.",
+    "fallback_note": "Canlı profil rozetleri alınamadı, bu yüzden genel hesap bayraklarından türetilen rozetler gösteriliyor.",
+    "not_reached": "Henüz ulaşılmadı"
   }
 }

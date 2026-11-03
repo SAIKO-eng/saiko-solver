@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Odznaki profilu",
-    "subtitle": "Tylko do odczytu podsumowanie odznak i wieku konta, które Discord zgłasza dla Twojego konta.",
+    "subtitle": "Widok tylko do odczytu odznak na koncie, z poziomami wieku konta, czasu gry i różnorodności gier.",
     "refresh": "Odśwież",
     "loading": "Ładowanie odznak…",
     "error": "Nie udało się wczytać danych odznak.",
@@ -571,6 +571,20 @@
     "profile_badges": "Odznaki Discord",
     "earned": "Zdobyta",
     "locked": "Brak na tym koncie",
-    "api_note": "Publiczne API Discorda udostępnia tylko klasyczne flagi profilu, status Nitro i datę utworzenia konta. Odznaki czasu gry, różnorodności gier i zadań są obliczane prywatnie przez Discorda i nie są tu dostępne, więc nie są wyświetlane."
+    "api_note": "Odznaki są odczytywane bezpośrednio z endpointu profilu Discorda za pomocą Twojego tokena na tym urządzeniu. Wiek konta wynika z daty utworzenia. Postęp czasu gry i różnorodności gier jest śledzony lokalnie przez SAIKO SOLVER i nie jest licznikiem Discorda. Nic nie jest wysyłane ani udostępniane.",
+    "tracks_title": "Odznaki poziomów",
+    "unavailable_title": "Odznaki bez odczytywalnego postępu",
+    "level": "Poziom {level}",
+    "next": "Następna: {name} przy {target}",
+    "maxed": "Osiągnięto maksymalny poziom.",
+    "hours": "{value} godz.",
+    "games": "{count} gier",
+    "game_time_source": "Na podstawie sesji zarejestrowanych przez SAIKO SOLVER na tym urządzeniu. Discord liczy czas gry osobno, więc może się to różnić od odznaki w profilu.",
+    "game_variety_source": "Na podstawie różnych gier zarejestrowanych przez SAIKO SOLVER na tym urządzeniu. Discord liczy gry osobno, więc może się to różnić od odznaki w profilu.",
+    "streaming_note": "Discord nie udostępnia godzin streamowania. Ten poziom jest tylko informacyjny; odznakę przyznaje Discord, gdy streamujesz dla innych.",
+    "gifting_note": "Discord nie udostępnia liczby prezentów. Ten poziom jest tylko informacyjny; odznakę przyznaje Discord, gdy wysyłasz prezenty ze sklepu lub listy życzeń.",
+    "profile_badges_empty": "Discord nie zwrócił żadnych odznak profilu dla tego konta.",
+    "fallback_note": "Nie udało się pobrać odznak profilu na żywo, więc zamiast nich pokazano odznaki wynikające z publicznych flag konta.",
+    "not_reached": "Jeszcze nieosiągnięte"
   }
 }

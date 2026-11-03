@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Badges de profil",
-    "subtitle": "Résumé en lecture seule des badges et de l'ancienneté du compte que Discord indique pour votre compte.",
+    "subtitle": "Vue en lecture seule des badges de votre compte, avec les échelles d'ancienneté, de temps de jeu et de variété de jeux.",
     "refresh": "Actualiser",
     "loading": "Chargement des badges…",
     "error": "Impossible de charger les données des badges.",
@@ -571,6 +571,20 @@
     "profile_badges": "Badges Discord",
     "earned": "Obtenu",
     "locked": "Absent de ce compte",
-    "api_note": "L'API publique de Discord n'expose que les flags classiques du profil, le statut Nitro et la date de création du compte. Les badges de temps de jeu, de variété de jeux et de quêtes sont calculés en interne par Discord et ne sont pas disponibles ici ; ils ne sont donc pas affichés."
+    "api_note": "Les badges sont lus directement depuis l'endpoint de profil de Discord avec votre propre jeton sur cet appareil. L'ancienneté du compte vient de votre date de création. La progression du temps de jeu et de la variété des jeux est enregistrée localement par SAIKO SOLVER et ne correspond pas au compteur de Discord. Rien n'est envoyé ni partagé.",
+    "tracks_title": "Badges à niveaux",
+    "unavailable_title": "Badges sans progression lisible",
+    "level": "Niveau {level}",
+    "next": "Suivant : {name} à {target}",
+    "maxed": "Niveau maximal atteint.",
+    "hours": "{value} h",
+    "games": "{count} jeux",
+    "game_time_source": "Basé sur les sessions enregistrées par SAIKO SOLVER sur cet appareil. Discord compte le temps de jeu séparément, ce qui peut différer du badge de votre profil.",
+    "game_variety_source": "Basé sur les jeux distincts enregistrés par SAIKO SOLVER sur cet appareil. Discord compte les jeux séparément, ce qui peut différer du badge de votre profil.",
+    "streaming_note": "Discord n'expose pas les heures de streaming. Cette échelle est indicative ; le badge est attribué par Discord lorsque vous streamez pour d'autres personnes.",
+    "gifting_note": "Discord n'expose pas le nombre de cadeaux. Cette échelle est indicative ; le badge est attribué par Discord lorsque vous envoyez des cadeaux depuis la boutique ou une liste de souhaits.",
+    "profile_badges_empty": "Discord n'a renvoyé aucun badge de profil pour ce compte.",
+    "fallback_note": "Les badges de profil en direct n'ont pas pu être récupérés ; les badges déduits des flags publics du compte sont affichés à la place.",
+    "not_reached": "Pas encore atteint"
   }
 }

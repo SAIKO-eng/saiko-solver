@@ -20,6 +20,14 @@ export interface AccountAgeTier {
   asset: string
 }
 
+export interface LeveledTier {
+  level: number
+  name: string
+  /** Hours of playtime (Game Time, Streaming) or number of games (Game Variety). */
+  threshold: number
+  asset: string
+}
+
 export const BADGE_CATALOG: BadgeDefinition[] = [
   { id: 'staff', name: 'Discord Staff', asset: '/badges/discord-staff.svg' },
   { id: 'partner', name: 'Partnered Server Owner', asset: '/badges/discord-partner.svg' },
@@ -63,7 +71,80 @@ export const ACCOUNT_AGE_TIERS: AccountAgeTier[] = [
   { level: 10, name: 'Primordial', years: 10, asset: '/badges/account-age-primordial.svg' },
 ]
 
+/** Thresholds match Discord's Game Time badge timeline. */
+export const GAME_TIME_TIERS: LeveledTier[] = [
+  { level: 1, name: 'Casual', threshold: 1, asset: '/badges/game-time-casual.svg' },
+  { level: 2, name: 'Recreational', threshold: 5, asset: '/badges/game-time-recreational.svg' },
+  { level: 3, name: 'Dedicated', threshold: 20, asset: '/badges/game-time-dedicated.svg' },
+  { level: 4, name: 'Committed', threshold: 75, asset: '/badges/game-time-committed.svg' },
+  { level: 5, name: 'Serious', threshold: 150, asset: '/badges/game-time-serious.svg' },
+  { level: 6, name: 'Devoted', threshold: 300, asset: '/badges/game-time-devoted.svg' },
+  { level: 7, name: 'Seasoned', threshold: 500, asset: '/badges/game-time-seasoned.svg' },
+  { level: 8, name: 'Ironclad', threshold: 1000, asset: '/badges/game-time-ironclad.svg' },
+  { level: 9, name: 'Unshakeable', threshold: 2000, asset: '/badges/game-time-unshakeable.svg' },
+  { level: 10, name: 'Eternal', threshold: 5000, asset: '/badges/game-time-eternal.svg' },
+]
+
+/** Thresholds match Discord's Game Variety badge timeline. */
+export const GAME_VARIETY_TIERS: LeveledTier[] = [
+  { level: 1, name: 'Sampler', threshold: 2, asset: '/badges/game-variety-sampler.svg' },
+  { level: 2, name: 'Dabbler', threshold: 5, asset: '/badges/game-variety-dabbler.svg' },
+  { level: 3, name: 'Enthusiast', threshold: 10, asset: '/badges/game-variety-enthusiast.svg' },
+  { level: 4, name: 'Ranger', threshold: 15, asset: '/badges/game-variety-ranger.svg' },
+  { level: 5, name: 'Explorer', threshold: 20, asset: '/badges/game-variety-explorer.svg' },
+  { level: 6, name: 'Adventurer', threshold: 30, asset: '/badges/game-variety-adventurer.svg' },
+  { level: 7, name: 'Voyager', threshold: 40, asset: '/badges/game-variety-voyager.svg' },
+  { level: 8, name: 'Maverick', threshold: 60, asset: '/badges/game-variety-maverick.svg' },
+  { level: 9, name: 'Polymath', threshold: 80, asset: '/badges/game-variety-polymath.svg' },
+  {
+    level: 10,
+    name: 'Universalist',
+    threshold: 100,
+    asset: '/badges/game-variety-universalist.svg',
+  },
+]
+
+/** Streaming tiers. Progress is not exposed by Discord, so these are informational. */
+export const STREAMING_TIERS: LeveledTier[] = [
+  { level: 1, name: 'Newcomer', threshold: 1, asset: '/badges/streaming-newcomer.svg' },
+  { level: 2, name: 'Fledgling', threshold: 5, asset: '/badges/streaming-fledgling.svg' },
+  { level: 3, name: 'Breakout', threshold: 20, asset: '/badges/streaming-breakout.svg' },
+  { level: 4, name: 'Standout', threshold: 75, asset: '/badges/streaming-standout.svg' },
+  { level: 5, name: 'Trendsetter', threshold: 150, asset: '/badges/streaming-trendsetter.svg' },
+  { level: 6, name: 'Headliner', threshold: 300, asset: '/badges/streaming-headliner.svg' },
+  { level: 7, name: 'Star', threshold: 500, asset: '/badges/streaming-star.svg' },
+  { level: 8, name: 'Sensation', threshold: 1000, asset: '/badges/streaming-sensation.svg' },
+  { level: 9, name: 'Visionary', threshold: 2000, asset: '/badges/streaming-visionary.svg' },
+  { level: 10, name: 'Phenomenon', threshold: 5000, asset: '/badges/streaming-phenomenon.svg' },
+]
+
+/** Gifting tiers. Counts are private, so these are informational. */
+export const GIFTING_TIERS: LeveledTier[] = [
+  { level: 1, name: 'Patron', threshold: 1, asset: '/badges/gifting-patron.png' },
+  { level: 2, name: 'Champion', threshold: 2, asset: '/badges/gifting-champion.png' },
+  { level: 3, name: 'Luminary', threshold: 3, asset: '/badges/gifting-luminary.png' },
+  { level: 4, name: 'Icon', threshold: 6, asset: '/badges/gifting-icon.png' },
+  { level: 5, name: 'Hero', threshold: 10, asset: '/badges/gifting-hero.png' },
+  { level: 6, name: 'Legend', threshold: 20, asset: '/badges/gifting-legend.png' },
+]
+
 export function accountAgeTier(level: number): AccountAgeTier | null {
   if (level <= 0) return null
   return ACCOUNT_AGE_TIERS.find(tier => tier.level === level) ?? null
+}
+
+export function leveledTier(tiers: LeveledTier[], level: number): LeveledTier | null {
+  if (level <= 0) return null
+  return tiers.find(tier => tier.level === level) ?? null
+}
+
+export function nextLeveledTier(tiers: LeveledTier[], level: number): LeveledTier | null {
+  return tiers.find(tier => tier.level === level + 1) ?? null
+}
+
+/** Resolve a profile badge icon hash to Discord's CDN URL. */
+export function badgeIconUrl(icon: string): string | null {
+  const hash = icon.trim()
+  if (!hash) return null
+  return `https://cdn.discordapp.com/badge-icons/${hash}.png`
 }

@@ -556,7 +556,7 @@
   },
   "badges": {
     "title": "Insignias de perfil",
-    "subtitle": "Resumen de solo lectura de las insignias y la antigüedad de cuenta que Discord informa para tu cuenta.",
+    "subtitle": "Vista de solo lectura de las insignias de tu cuenta, con escalas de antigüedad, tiempo de juego y variedad de juegos.",
     "refresh": "Actualizar",
     "loading": "Cargando insignias…",
     "error": "No se pudieron cargar los datos de las insignias.",
@@ -571,6 +571,20 @@
     "profile_badges": "Insignias de Discord",
     "earned": "Obtenida",
     "locked": "No está en esta cuenta",
-    "api_note": "La API pública de Discord solo expone los flags clásicos del perfil, el estado de Nitro y la fecha de creación de la cuenta. Las insignias de tiempo de juego, variedad de juegos y misiones las calcula Discord de forma privada y no están disponibles aquí, por lo que no se muestran."
+    "api_note": "Las insignias se leen directamente del endpoint de perfil de Discord con tu propio token en este equipo. La antigüedad de la cuenta proviene de tu fecha de creación. El progreso de tiempo de juego y variedad de juegos lo registra SAIKO SOLVER localmente y no es el contador de Discord. No se sube ni se comparte nada.",
+    "tracks_title": "Insignias por niveles",
+    "unavailable_title": "Insignias sin progreso legible",
+    "level": "Nivel {level}",
+    "next": "Siguiente: {name} con {target}",
+    "maxed": "Nivel máximo alcanzado.",
+    "hours": "{value} h",
+    "games": "{count} juegos",
+    "game_time_source": "Basado en las sesiones registradas por SAIKO SOLVER en este dispositivo. Discord cuenta el tiempo de juego por separado, así que puede diferir de la insignia de tu perfil.",
+    "game_variety_source": "Basado en los distintos juegos registrados por SAIKO SOLVER en este dispositivo. Discord cuenta los juegos por separado, así que puede diferir de la insignia de tu perfil.",
+    "streaming_note": "Discord no expone las horas de transmisión. Esta escala es solo informativa; Discord otorga la insignia cuando transmites para otras personas.",
+    "gifting_note": "Discord no expone el número de regalos. Esta escala es solo informativa; Discord otorga la insignia cuando envías regalos desde la tienda o una lista de deseos.",
+    "profile_badges_empty": "Discord no devolvió ninguna insignia de perfil para esta cuenta.",
+    "fallback_note": "No se pudieron obtener las insignias del perfil en vivo, así que se muestran las insignias derivadas de los flags públicos de la cuenta.",
+    "not_reached": "Aún no alcanzado"
   }
 }
