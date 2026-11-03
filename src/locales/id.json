@@ -585,6 +585,9 @@
     "gifting_note": "Discord tidak menampilkan jumlah hadiah. Tingkat ini hanya untuk referensi; lencana diberikan Discord saat kamu mengirim hadiah dari Toko atau daftar keinginan.",
     "profile_badges_empty": "Discord tidak mengembalikan lencana profil untuk akun ini.",
     "fallback_note": "Lencana profil langsung tidak dapat diambil, jadi lencana dari flag akun publik ditampilkan sebagai gantinya.",
-    "not_reached": "Belum tercapai"
+    "not_reached": "Belum tercapai",
+    "open_simulator": "Buka Simulator Game",
+    "game_time_hint": "Mulai sesi di Simulator Game untuk menambah waktu bermain. Discord menghitung waktu bermain sendiri, jadi badge mungkin diperbarui nanti atau tidak sama sekali.",
+    "game_variety_hint": "Mainkan judul yang berbeda di Simulator Game untuk menambah variasi — blok bermain yang lebih singkat mencakup lebih banyak game lebih cepat. Discord menghitung game sendiri, jadi badge mungkin diperbarui nanti atau tidak sama sekali."
   }
 }

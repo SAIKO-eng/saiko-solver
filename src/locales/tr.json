@@ -585,6 +585,9 @@
     "gifting_note": "Discord hediye sayısını paylaşmaz. Bu seviye yalnızca bilgi amaçlıdır; rozet, Mağaza veya istek listesinden hediye gönderdiğinizde Discord tarafından verilir.",
     "profile_badges_empty": "Discord bu hesap için profil rozeti döndürmedi.",
     "fallback_note": "Canlı profil rozetleri alınamadı, bu yüzden genel hesap bayraklarından türetilen rozetler gösteriliyor.",
-    "not_reached": "Henüz ulaşılmadı"
+    "not_reached": "Henüz ulaşılmadı",
+    "open_simulator": "Oyun Simülatörünü aç",
+    "game_time_hint": "Oyun süresi biriktirmek için Oyun Simülatöründe bir oturum başlat. Discord oyun süresini kendi tarafında sayar, bu yüzden rozet daha sonra güncellenebilir ya da hiç güncellenmeyebilir.",
+    "game_variety_hint": "Çeşitliliği artırmak için Oyun Simülatöründe farklı oyunlar oyna — daha kısa oyun blokları daha fazla oyunu daha çabuk kapsar. Discord oyunları kendi tarafında sayar, bu yüzden rozet daha sonra güncellenebilir ya da hiç güncellenmeyebilir."
   }
 }

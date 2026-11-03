@@ -25,8 +25,8 @@ use discord_cdp_launch_core::is_discord_auxiliary_page;
 const QUEST_HOME_URL: &str = "https://discord.com/quest-home";
 const QUEST_HOME_DETOUR_URL: &str = "https://discord.com/store";
 const QUEST_WARMUP_NAV_TIMEOUT_SECS: u64 = 20;
-const QUEST_WARMUP_DWELL_MS: u64 = 1500;
-const QUEST_WARMUP_RESTORE_SETTLE_MS: u64 = 800;
+const QUEST_WARMUP_DWELL_MS: u64 = 1000;
+const QUEST_WARMUP_RESTORE_SETTLE_MS: u64 = 500;
 const CDP_CLEANUP_ATTEMPTS: u32 = 5;
 const CDP_CLEANUP_CANCEL_ATTEMPTS: u32 = 1;
 const CDP_CLEANUP_VERIFY_TIMEOUT_SECS: u64 = 10;
@@ -2582,7 +2582,7 @@ pub async fn complete_play_quest_via_cdp(
     );
 
     // 3. Poll progress using Rust API client (reliable) with CDP fallback
-    let poll_interval = Duration::from_secs(15);
+    let poll_interval = Duration::from_secs(5);
     let initial_pct = if seconds_needed > 0 {
         (initial_progress / seconds_needed as f64) * 100.0
     } else {
@@ -2748,7 +2748,7 @@ pub async fn complete_stream_quest_via_cdp(
     );
 
     // 3. Poll progress using Rust API client (reliable) with CDP fallback
-    let poll_interval = Duration::from_secs(20);
+    let poll_interval = Duration::from_secs(5);
     let initial_pct = if seconds_needed > 0 {
         (initial_progress / seconds_needed as f64) * 100.0
     } else {

@@ -47,7 +47,7 @@ async fn confirm_play_activity_via_api(
 
         if !confirmed && attempt < 6 {
             tokio::select! {
-                _ = sleep(Duration::from_secs(2)) => {},
+                _ = sleep(Duration::from_millis(750)) => {},
                 _ = cancel_rx.recv() => {
                     let _ = app_handle.emit("quest-stopped", ());
                     return Ok(());

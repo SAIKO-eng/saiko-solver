@@ -585,6 +585,9 @@
     "gifting_note": "Discord 不公开赠送数量。此等级仅供参考；当你从商店或愿望单送出礼物时，Discord 会授予徽章。",
     "profile_badges_empty": "Discord 未返回此账号的任何个人资料徽章。",
     "fallback_note": "无法获取实时个人资料徽章，因此改为显示由公开账号标志推导出的徽章。",
-    "not_reached": "尚未达到"
+    "not_reached": "尚未达到",
+    "open_simulator": "打开游戏模拟器",
+    "game_time_hint": "在游戏模拟器中开始会话以累积游玩时间。Discord 会在其服务器上统计游玩时间，因此徽章可能稍后更新，也可能不会更新。",
+    "game_variety_hint": "在游戏模拟器中游玩不同游戏以提高多样性 — 较短的游玩时段能更快覆盖更多游戏。Discord 会在其服务器上统计游戏数量，因此徽章可能稍后更新，也可能不会更新。"
   }
 }

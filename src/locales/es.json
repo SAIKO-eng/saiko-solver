@@ -585,6 +585,9 @@
     "gifting_note": "Discord no expone el número de regalos. Esta escala es solo informativa; Discord otorga la insignia cuando envías regalos desde la tienda o una lista de deseos.",
     "profile_badges_empty": "Discord no devolvió ninguna insignia de perfil para esta cuenta.",
     "fallback_note": "No se pudieron obtener las insignias del perfil en vivo, así que se muestran las insignias derivadas de los flags públicos de la cuenta.",
-    "not_reached": "Aún no alcanzado"
+    "not_reached": "Aún no alcanzado",
+    "open_simulator": "Abrir simulador de juegos",
+    "game_time_hint": "Inicia una sesión en el simulador de juegos para acumular tiempo de juego. Discord cuenta el tiempo por su cuenta, así que la insignia puede actualizarse más tarde o no hacerlo.",
+    "game_variety_hint": "Juega distintos títulos en el simulador de juegos para aumentar la variedad: los bloques de juego más cortos cubren más juegos antes. Discord cuenta los juegos por su cuenta, así que la insignia puede actualizarse más tarde o no hacerlo."
   }
 }

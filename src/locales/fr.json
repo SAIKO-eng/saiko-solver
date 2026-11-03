@@ -585,6 +585,9 @@
     "gifting_note": "Discord n'expose pas le nombre de cadeaux. Cette échelle est indicative ; le badge est attribué par Discord lorsque vous envoyez des cadeaux depuis la boutique ou une liste de souhaits.",
     "profile_badges_empty": "Discord n'a renvoyé aucun badge de profil pour ce compte.",
     "fallback_note": "Les badges de profil en direct n'ont pas pu être récupérés ; les badges déduits des flags publics du compte sont affichés à la place.",
-    "not_reached": "Pas encore atteint"
+    "not_reached": "Pas encore atteint",
+    "open_simulator": "Ouvrir le simulateur de jeux",
+    "game_time_hint": "Lance une session dans le simulateur de jeux pour accumuler du temps de jeu. Discord compte le temps de son côté, donc le badge peut se mettre à jour plus tard, voire jamais.",
+    "game_variety_hint": "Joue à différents titres dans le simulateur de jeux pour augmenter la variété : des sessions plus courtes couvrent plus de jeux plus vite. Discord compte les jeux de son côté, donc le badge peut se mettre à jour plus tard, voire jamais."
   }
 }

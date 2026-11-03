@@ -585,6 +585,9 @@
     "gifting_note": "Discord does not expose gift counts. This track is shown for reference only; the badge is granted by Discord when you send gifts from the Shop or a wishlist.",
     "profile_badges_empty": "Discord did not return any profile badges for this account.",
     "fallback_note": "The live profile badges could not be fetched, so badges derived from the public account flags are shown instead.",
-    "not_reached": "Not reached yet"
+    "not_reached": "Not reached yet",
+    "open_simulator": "Open Game Simulator",
+    "game_time_hint": "Start a session in the Game Simulator to build playtime. Discord counts playtime on its side, so the badge may update later or not at all.",
+    "game_variety_hint": "Play different titles in the Game Simulator to raise variety — shorter play blocks cover more games sooner. Discord counts games on its side, so the badge may update later or not at all."
   }
 }

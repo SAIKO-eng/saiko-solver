@@ -114,13 +114,15 @@ export const useQuestsStore = defineStore('quests', () => {
   }
   const heartbeatInterval = ref(initialInterval)
 
-  // Game polling interval (seconds) - for Play/Game quests progress detection
+  // Game polling interval (seconds) - for Play/Game quests progress detection.
+  // Kept short so a finished simulation is noticed quickly instead of idling
+  // for minutes before the next queued quest starts.
   const STORAGE_GAME_POLLING_KEY = 'questHelper_gamePollingInterval'
   const savedGamePolling = localStorage.getItem(STORAGE_GAME_POLLING_KEY)
-  let initialGamePolling = savedGamePolling ? parseInt(savedGamePolling) : 120
-  // Validate range (30 to 300)
-  if (isNaN(initialGamePolling) || initialGamePolling < 30 || initialGamePolling > 300) {
-    initialGamePolling = 120
+  let initialGamePolling = savedGamePolling ? parseInt(savedGamePolling) : 30
+  // Validate range (15 to 300)
+  if (isNaN(initialGamePolling) || initialGamePolling < 15 || initialGamePolling > 300) {
+    initialGamePolling = 30
   }
   const gamePollingInterval = ref(initialGamePolling)
 
@@ -501,7 +503,7 @@ export const useQuestsStore = defineStore('quests', () => {
     void fetchQuests(true, true)
     setTimeout(() => {
       if (isQueueRunning.value) void processQueue()
-    }, 2000)
+    }, 250)
   }
 
   async function checkActiveQuestStatus() {
@@ -1270,8 +1272,8 @@ export const useQuestsStore = defineStore('quests', () => {
           await acceptQuest(id)
           updateQuestEnrollment(id, new Date().toISOString())
           successCount++
-          // Small delay to be nice to API
-          await new Promise(r => setTimeout(r, 500))
+          // Small delay to stay well inside Discord's rate limits
+          await new Promise(r => setTimeout(r, 250))
         } catch (e) {
           console.error(`Failed to accept quest ${id}:`, e)
           failCount++

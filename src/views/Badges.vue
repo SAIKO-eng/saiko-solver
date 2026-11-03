@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { RefreshCw } from 'lucide-vue-next'
+import { Gamepad2, RefreshCw } from 'lucide-vue-next'
 import { getBadgeOverview, type BadgeOverview, type ProfileBadge } from '@/api/badges'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { navigateToTab } from '@/utils/navigate'
 import {
   ACCOUNT_AGE_TIERS,
   BADGE_CATALOG,
@@ -352,6 +353,16 @@ onMounted(load)
                 <span>{{ tier.name }}</span>
               </div>
             </div>
+
+            <div class="mt-4 border-t border-border/60 pt-3">
+              <Button variant="secondary" size="sm" @click="navigateToTab('game')">
+                <Gamepad2 class="mr-2 h-4 w-4" />
+                {{ t('badges.open_simulator') }}
+              </Button>
+              <p class="mt-2 text-[11px] leading-relaxed text-muted-foreground/80">
+                {{ t('badges.game_time_hint') }}
+              </p>
+            </div>
           </article>
 
           <!-- Game Variety -->
@@ -417,6 +428,16 @@ onMounted(load)
                 <img :src="tier.asset" :alt="tier.name" class="h-4 w-4 object-contain" />
                 <span>{{ tier.name }}</span>
               </div>
+            </div>
+
+            <div class="mt-4 border-t border-border/60 pt-3">
+              <Button variant="secondary" size="sm" @click="navigateToTab('game')">
+                <Gamepad2 class="mr-2 h-4 w-4" />
+                {{ t('badges.open_simulator') }}
+              </Button>
+              <p class="mt-2 text-[11px] leading-relaxed text-muted-foreground/80">
+                {{ t('badges.game_variety_hint') }}
+              </p>
             </div>
           </article>
         </div>

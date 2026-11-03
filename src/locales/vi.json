@@ -585,6 +585,9 @@
     "gifting_note": "Discord không công bố số quà tặng. Thang này chỉ để tham khảo; Discord trao huy hiệu khi bạn gửi quà từ Cửa hàng hoặc danh sách mong muốn.",
     "profile_badges_empty": "Discord không trả về huy hiệu hồ sơ nào cho tài khoản này.",
     "fallback_note": "Không thể lấy huy hiệu hồ sơ trực tiếp, nên hiển thị huy hiệu suy ra từ cờ tài khoản công khai.",
-    "not_reached": "Chưa đạt"
+    "not_reached": "Chưa đạt",
+    "open_simulator": "Mở trình mô phỏng game",
+    "game_time_hint": "Bắt đầu phiên trong trình mô phỏng game để tích lũy thời gian chơi. Discord tự đếm thời gian chơi ở phía họ, nên huy hiệu có thể cập nhật muộn hoặc không cập nhật.",
+    "game_variety_hint": "Chơi nhiều tựa game khác nhau trong trình mô phỏng game để tăng độ đa dạng — các phiên chơi ngắn hơn sẽ bao phủ nhiều game nhanh hơn. Discord tự đếm số game ở phía họ, nên huy hiệu có thể cập nhật muộn hoặc không cập nhật."
   }
 }

@@ -585,6 +585,9 @@
     "gifting_note": "Discord 不公開送禮數量。此等級僅供參考；當你從商店或願望清單送出禮物時，Discord 會授予徽章。",
     "profile_badges_empty": "Discord 未回傳此帳號的任何個人檔案徽章。",
     "fallback_note": "無法取得即時個人檔案徽章，因此改為顯示由公開帳號旗標推導出的徽章。",
-    "not_reached": "尚未達成"
+    "not_reached": "尚未達成",
+    "open_simulator": "開啟遊戲模擬器",
+    "game_time_hint": "在遊戲模擬器中開始工作階段以累積遊玩時間。Discord 會自行計算遊玩時間，因此徽章可能稍後更新，也可能不會更新。",
+    "game_variety_hint": "在遊戲模擬器中遊玩不同遊戲以提高多樣性 — 較短的遊玩區塊能更快涵蓋更多遊戲。Discord 會自行計算遊戲數量，因此徽章可能稍後更新，也可能不會更新。"
   }
 }

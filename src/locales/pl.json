@@ -585,6 +585,9 @@
     "gifting_note": "Discord nie udostępnia liczby prezentów. Ten poziom jest tylko informacyjny; odznakę przyznaje Discord, gdy wysyłasz prezenty ze sklepu lub listy życzeń.",
     "profile_badges_empty": "Discord nie zwrócił żadnych odznak profilu dla tego konta.",
     "fallback_note": "Nie udało się pobrać odznak profilu na żywo, więc zamiast nich pokazano odznaki wynikające z publicznych flag konta.",
-    "not_reached": "Jeszcze nieosiągnięte"
+    "not_reached": "Jeszcze nieosiągnięte",
+    "open_simulator": "Otwórz symulator gier",
+    "game_time_hint": "Rozpocznij sesję w symulatorze gier, aby nabijać czas gry. Discord liczy czas gry po swojej stronie, więc odznaka może zaktualizować się później albo wcale.",
+    "game_variety_hint": "Graj w różne tytuły w symulatorze gier, aby zwiększyć różnorodność — krótsze bloki gry pozwalają szybciej objąć więcej gier. Discord liczy gry po swojej stronie, więc odznaka może zaktualizować się później albo wcale."
   }
 }

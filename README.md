@@ -69,6 +69,10 @@ No activation code, license key, or account is required — download, extract, a
 - 👥 **Multi-Account Support** — Manage multiple Discord accounts in one app.
 - 🌏 **Multi-language** — English, Simplified Chinese, Traditional Chinese, Japanese, Korean, Russian, Spanish, German, French, Indonesian, Polish, Portuguese, Thai, Turkish, and Vietnamese.
 
+### Speed
+
+SAIKO SOLVER removes the dead time around quests: progress is polled every few seconds, the queue hands off to the next quest almost immediately, and CDP warm-up no longer waits on fixed multi-second pauses. What it cannot do is compress a quest's required duration — Discord validates elapsed time on its side, so a 15-minute quest still takes about 15 minutes. Game Time is wall-clock playtime too: the Game Simulator accrues it in real time, while Game Variety grows faster when you use shorter play blocks across more titles.
+
 ## 📸 Screenshots
 
 | Login | Home |

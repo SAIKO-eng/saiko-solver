@@ -585,6 +585,9 @@
     "gifting_note": "O Discord não expõe o número de presentes. Esta escala é apenas informativa; o emblema é atribuído pelo Discord quando envias presentes da Loja ou de uma lista de desejos.",
     "profile_badges_empty": "O Discord não devolveu qualquer emblema de perfil para esta conta.",
     "fallback_note": "Não foi possível obter os emblemas do perfil em direto, pelo que são apresentados os emblemas derivados dos flags públicos da conta.",
-    "not_reached": "Ainda não alcançado"
+    "not_reached": "Ainda não alcançado",
+    "open_simulator": "Abrir simulador de jogos",
+    "game_time_hint": "Inicie uma sessão no simulador de jogos para acumular tempo de jogo. O Discord conta o tempo do seu lado, por isso a insígnia pode atualizar mais tarde ou nunca.",
+    "game_variety_hint": "Jogue títulos diferentes no simulador de jogos para aumentar a variedade — blocos de jogo mais curtos abrangem mais jogos mais depressa. O Discord conta os jogos do seu lado, por isso a insígnia pode atualizar mais tarde ou nunca."
   }
 }

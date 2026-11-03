@@ -585,6 +585,9 @@
     "gifting_note": "Discord gibt keine Verschenk-Zahlen an. Diese Stufe dient nur als Referenz; das Abzeichen vergibt Discord, wenn du Geschenke im Shop oder über eine Wunschliste sendest.",
     "profile_badges_empty": "Discord hat für dieses Konto keine Profilabzeichen zurückgegeben.",
     "fallback_note": "Die Live-Profilabzeichen konnten nicht geladen werden, daher werden Abzeichen aus den öffentlichen Kontofahnen angezeigt.",
-    "not_reached": "Noch nicht erreicht"
+    "not_reached": "Noch nicht erreicht",
+    "open_simulator": "Game-Simulator öffnen",
+    "game_time_hint": "Starte eine Sitzung im Game-Simulator, um Spielzeit aufzubauen. Discord zählt die Spielzeit selbst, daher kann sich das Badge später oder gar nicht aktualisieren.",
+    "game_variety_hint": "Spiele verschiedene Titel im Game-Simulator, um die Vielfalt zu erhöhen – kürzere Spielblöcke decken schneller mehr Spiele ab. Discord zählt die Spiele selbst, daher kann sich das Badge später oder gar nicht aktualisieren."
   }
 }
