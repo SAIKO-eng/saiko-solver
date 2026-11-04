@@ -1357,13 +1357,29 @@ async function startQuest(quest: Quest) {
         })
     }
   } else if (isStreamQuest) {
-    // Stream quests require actually streaming a game
-    toast.info({
-      title: t('toast.stream_quest_title'),
-      description: t('toast.stream_quest_desc'),
-      duration: 0,
-      actions: [{ label: t('toast.known'), onClick: () => {} }],
-    })
+    if (questsStore.gameQuestMode === 'simulate') {
+      // Simulate mode only launches a game process, which cannot satisfy a
+      // stream quest — explain what is actually required instead.
+      toast.info({
+        title: t('toast.stream_quest_title'),
+        description: t('toast.stream_quest_desc'),
+        duration: 0,
+        actions: [
+          { label: t('toast.open_settings'), onClick: () => navigateToTab('settings', 'quest_behavior') },
+          { label: t('toast.known'), onClick: () => {} },
+        ],
+      })
+    } else {
+      try {
+        await questsStore.startStreamForQuest(quest, secondsNeeded, initialProgress)
+      } catch (e) {
+        toast.error({
+          title: t('toast.failed_start_game'),
+          description: String(e),
+          actions: [{ label: t('toast.open_settings'), onClick: () => navigateToTab('settings', 'quest_behavior') }],
+        })
+      }
+    }
   } else if (isActivityQuest) {
     if (isPlayActivityTask(task)) {
       if (questsStore.gameQuestMode === 'cdp' && !questsStore.cdpAvailable) {

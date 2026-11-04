@@ -86,6 +86,27 @@ export function getQuestKind(quest: Quest): QuestKind {
   return 'video'
 }
 
+/**
+ * Concrete runner to use for a quest, derived from its first startable task.
+ *
+ * `getQuestKind` groups desktop play and stream quests under the UI's "game"
+ * filter on purpose, so it must not drive execution: a `STREAM_ON_DESKTOP`
+ * quest needs the streaming path, while a `PLAY_ON_DESKTOP` quest needs the
+ * game path. Cloud activities also need their own runner.
+ */
+export type QuestActionKind = 'video' | 'play' | 'stream' | 'play_activity' | 'activity'
+
+export function getQuestActionKind(quest: Quest): QuestActionKind | null {
+  const task = firstStartableTask(quest)
+  if (!task) return null
+  if (isVideoTask(task)) return 'video'
+  if (isDesktopPlayTask(task)) return 'play'
+  if (isStreamTask(task)) return 'stream'
+  if (isPlayActivityTask(task)) return 'play_activity'
+  if (isActivityTask(task)) return 'activity'
+  return null
+}
+
 export function isVideoTask(task: QuestTaskView): boolean {
   return task.type === 'WATCH_VIDEO' || task.type === 'WATCH_VIDEO_ON_MOBILE' || task.type.includes('VIDEO')
 }

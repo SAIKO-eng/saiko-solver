@@ -2362,6 +2362,63 @@ pub async fn stop_manual_game_spoof(port: u16) -> Result<()> {
         .context("Failed to clean up the manual CDP game simulation")
 }
 
+/// Apply a persistent stream-state spoof for the manual simulator.
+///
+/// This mirrors the stream-quest startup path, but it does not poll or touch
+/// quest progress: the spoof stays installed until the caller cleans it up.
+/// Discord still sees a real client, yet no Go Live media session exists, so
+/// this cannot add streaming badge hours.
+pub async fn start_manual_stream_spoof(port: u16, app_id: &str, app_name: &str) -> Result<()> {
+    use crate::logger::{log, LogCategory, LogLevel};
+
+    // Start from a verified clean state so a leftover spoof from an earlier
+    // app process cannot stack with this one.
+    cdp_cleanup_with_attempts(port, CDP_CLEANUP_ATTEMPTS)
+        .await
+        .context("Failed to clear an existing CDP activity simulation")?;
+    cdp_warmup_quest_route(port).await;
+
+    let result = async {
+        cdp_prepare_quest_modules(port, "manual stream simulation").await?;
+        let stream = cdp_execute_json_on_task_target(
+            port,
+            &js_spoof_stream(app_id),
+            false,
+            10,
+            "manual stream simulation",
+        )
+        .await?;
+        log_partial_target_failures("manual stream simulation", &stream.target_failures);
+        let game = cdp_execute_json_on_task_target(
+            port,
+            &js_spoof_play_game(app_id, app_name),
+            true,
+            15,
+            "manual stream companion game",
+        )
+        .await?;
+        log_partial_target_failures("manual stream companion game", &game.target_failures);
+        Ok(())
+    }
+    .await;
+
+    if let Err(err) = result {
+        cdp_cleanup_after_stop(port, "manual stream simulation startup failed", false).await;
+        return Err(err);
+    }
+
+    log(
+        LogLevel::Info,
+        LogCategory::TokenExtraction,
+        &format!(
+            "CDP manual stream simulation started for app_id={} ({})",
+            app_id, app_name
+        ),
+        None,
+    );
+    Ok(())
+}
+
 /// Poll quest progress via CDP. Uses direct API call for fresh data.
 ///
 /// Returns `(progress_seconds, completed)`.

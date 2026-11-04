@@ -137,6 +137,18 @@ pub struct ManualCdpGameSimulation {
     pub cdp_port: u16,
 }
 
+/// Backend-owned manual CDP stream-state simulation session. This is an
+/// experimental display aid: it makes the local Discord client report an
+/// active stream, but it does not create a real Go Live session and does not
+/// add streaming badge hours.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ManualCdpStreamSimulation {
+    pub app_id: String,
+    pub app_name: String,
+    pub cdp_port: u16,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExtractedAccount {
     pub token: String,

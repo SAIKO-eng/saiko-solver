@@ -85,6 +85,7 @@ struct AppState {
     authenticated_user: Mutex<Option<DiscordUser>>,
     quest_state: Mutex<Option<QuestState>>,
     manual_cdp_game: tokio::sync::Mutex<ManualCdpGameSessionState>,
+    manual_cdp_stream: tokio::sync::Mutex<ManualCdpStreamSessionState>,
     game_idle: std::sync::Arc<game_idle::GameIdleManager>,
     simulation_history: std::sync::Arc<simulation_history::SimulationHistory>,
     /// Serializes quest startup, manual CDP startup, and active-work teardown
@@ -174,6 +175,87 @@ mod manual_cdp_game_session_tests {
 
     #[test]
     fn session_uses_the_frontend_camel_case_contract() {
+        let value = serde_json::to_value(session("Contract")).unwrap();
+        assert_eq!(value["appId"], "123456");
+        assert_eq!(value["appName"], "Contract");
+        assert_eq!(value["cdpPort"], 9223);
+        assert!(value.get("app_id").is_none());
+    }
+}
+
+#[derive(Debug, Default)]
+struct ManualCdpStreamSessionState {
+    active: Option<ManualCdpStreamSimulation>,
+}
+
+impl ManualCdpStreamSessionState {
+    fn ensure_idle(&self) -> Result<(), String> {
+        match &self.active {
+            Some(session) => Err(format!(
+                "A manual CDP stream simulation is already active for {}",
+                session.app_name
+            )),
+            None => Ok(()),
+        }
+    }
+
+    fn activate(&mut self, session: ManualCdpStreamSimulation) {
+        self.active = Some(session);
+    }
+
+    fn active(&self) -> Option<ManualCdpStreamSimulation> {
+        self.active.clone()
+    }
+
+    fn clear(&mut self) {
+        self.active = None;
+    }
+
+    fn finish_cleanup(&mut self, result: Result<(), String>) -> Result<(), String> {
+        result?;
+        self.clear();
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod manual_cdp_stream_session_tests {
+    use super::*;
+
+    fn session(name: &str) -> ManualCdpStreamSimulation {
+        ManualCdpStreamSimulation {
+            app_id: "123456".to_string(),
+            app_name: name.to_string(),
+            cdp_port: 9223,
+        }
+    }
+
+    #[test]
+    fn only_one_manual_cdp_stream_can_be_active() {
+        let mut state = ManualCdpStreamSessionState::default();
+        state.ensure_idle().unwrap();
+        state.activate(session("First"));
+
+        assert!(state.ensure_idle().is_err());
+        assert_eq!(state.active().unwrap().app_name, "First");
+    }
+
+    #[test]
+    fn failed_stream_cleanup_keeps_the_session_for_retry() {
+        let mut state = ManualCdpStreamSessionState::default();
+        state.activate(session("Retry Me"));
+
+        assert!(state
+            .finish_cleanup(Err("Discord target disconnected".to_string()))
+            .is_err());
+        assert_eq!(state.active().unwrap().app_name, "Retry Me");
+
+        state.finish_cleanup(Ok(())).unwrap();
+        assert!(state.active().is_none());
+    }
+
+    #[test]
+    fn stream_session_uses_the_frontend_camel_case_contract() {
         let value = serde_json::to_value(session("Contract")).unwrap();
         assert_eq!(value["appId"], "123456");
         assert_eq!(value["appName"], "Contract");
@@ -1324,9 +1406,32 @@ async fn stop_manual_cdp_game_simulation_internal(
     sessions.finish_cleanup(cleanup_result)
 }
 
+async fn stop_manual_cdp_stream_simulation_internal(
+    state: &State<'_, AppState>,
+) -> Result<(), String> {
+    // Same locking discipline as the game session: hold the lock through the
+    // verified cleanup so a concurrent start cannot install a new spoof
+    // between cleanup and clearing the saved session.
+    let mut sessions = state.manual_cdp_stream.lock().await;
+    let Some(session) = sessions.active() else {
+        return Ok(());
+    };
+
+    let cleanup_result = cdp_quest::stop_manual_game_spoof(session.cdp_port)
+        .await
+        .map_err(|error| {
+            format!(
+                "Failed to stop manual CDP stream simulation: {error}. Restart Discord if the simulated stream remains visible."
+            )
+        });
+    sessions.finish_cleanup(cleanup_result)
+}
+
 async fn stop_active_work_internal(state: &State<'_, AppState>) -> Result<(), String> {
     stop_quest_internal(state).await;
-    stop_manual_cdp_game_simulation_internal(state).await
+    let game = stop_manual_cdp_game_simulation_internal(state).await;
+    let stream = stop_manual_cdp_stream_simulation_internal(state).await;
+    game.and(stream)
 }
 
 /// Navigate Discord client SPA to a specific path (no reload)
@@ -1361,6 +1466,7 @@ async fn run_simulated_game(
     state.game_idle.ensure_idle().await?;
     ensure_no_active_quest(&state).await?;
     state.manual_cdp_game.lock().await.ensure_idle()?;
+    state.manual_cdp_stream.lock().await.ensure_idle()?;
     ensure_no_running_simulated_game()?;
     tauri::async_runtime::spawn_blocking(move || {
         game_simulator::run_simulated_game(&name, &path, &executable_name, &app_id)
@@ -1410,6 +1516,7 @@ async fn start_manual_cdp_game_simulation(
     let _gate = state.activity_gate.lock().await;
     state.game_idle.ensure_idle().await?;
     ensure_no_active_quest(&state).await?;
+    stop_manual_cdp_stream_simulation_internal(&state).await?;
     ensure_no_running_simulated_game()?;
 
     let mut sessions = state.manual_cdp_game.lock().await;
@@ -1461,6 +1568,87 @@ async fn get_manual_cdp_game_simulation(
     Ok(state.manual_cdp_game.lock().await.active())
 }
 
+/// Start a persistent, experimental stream-state simulation inside Discord.
+///
+/// This makes the local client report an active stream. It is not a real Go
+/// Live session and does not add streaming badge hours.
+#[tauri::command]
+async fn start_manual_cdp_stream_simulation(
+    app_id: String,
+    app_name: String,
+    cdp_port: u16,
+    state: State<'_, AppState>,
+) -> Result<ManualCdpStreamSimulation, String> {
+    let app_id = app_id.trim().to_string();
+    let app_name = app_name.trim().to_string();
+    if app_id.is_empty() {
+        return Err("Application ID is required for CDP stream simulation".to_string());
+    }
+    if app_name.is_empty() {
+        return Err("Application name is required for CDP stream simulation".to_string());
+    }
+    if cdp_port == 0 {
+        return Err("CDP port must be between 1 and 65535".to_string());
+    }
+
+    // Keep the gate through activation so a concurrent quest or game
+    // simulation cannot install a second Discord activity.
+    let _gate = state.activity_gate.lock().await;
+    state.game_idle.ensure_idle().await?;
+    ensure_no_active_quest(&state).await?;
+    stop_manual_cdp_game_simulation_internal(&state).await?;
+    ensure_no_running_simulated_game()?;
+
+    let mut sessions = state.manual_cdp_stream.lock().await;
+    sessions.ensure_idle()?;
+
+    let status = cdp_client::check_cdp_available(cdp_port).await;
+    if !status.connected {
+        return Err(status
+            .error
+            .unwrap_or_else(|| format!("Discord CDP is not connected on port {cdp_port}")));
+    }
+
+    ensure_cdp_account_consistency(&state, cdp_port).await?;
+
+    if let Err(error) = cdp_client::with_pinned_discord_session(
+        cdp_quest::start_manual_stream_spoof(cdp_port, &app_id, &app_name),
+    )
+    .await
+    {
+        // A cancelled start can leave a partially installed spoof behind.
+        // Roll it back outside the cancelled session scope.
+        cdp_quest::cdp_cleanup_after_stop(cdp_port, "manual stream simulation aborted", false)
+            .await;
+        return Err(format!(
+            "Failed to start manual CDP stream simulation: {error}"
+        ));
+    }
+
+    let session = ManualCdpStreamSimulation {
+        app_id,
+        app_name,
+        cdp_port,
+    };
+    sessions.activate(session.clone());
+    Ok(session)
+}
+
+/// Stop and fully verify cleanup of the current manual CDP stream simulation.
+#[tauri::command]
+async fn stop_manual_cdp_stream_simulation(state: State<'_, AppState>) -> Result<(), String> {
+    let _gate = state.activity_gate.lock().await;
+    stop_manual_cdp_stream_simulation_internal(&state).await
+}
+
+/// Return the backend-owned manual CDP stream simulation, if one is active.
+#[tauri::command]
+async fn get_manual_cdp_stream_simulation(
+    state: State<'_, AppState>,
+) -> Result<Option<ManualCdpStreamSimulation>, String> {
+    Ok(state.manual_cdp_stream.lock().await.active())
+}
+
 #[tauri::command]
 async fn start_game_idle(
     config: game_idle::GameIdleConfig,
@@ -1481,6 +1669,7 @@ async fn start_game_idle(
     state.game_idle.ensure_idle().await?;
     ensure_no_active_quest(&state).await?;
     state.manual_cdp_game.lock().await.ensure_idle()?;
+    state.manual_cdp_stream.lock().await.ensure_idle()?;
     ensure_no_running_simulated_game()?;
     if config.mode == game_idle::GameIdleMode::Cdp {
         let status = cdp_client::check_cdp_available(config.cdp_port).await;
@@ -2227,6 +2416,7 @@ pub fn run() {
             authenticated_user: Mutex::new(None),
             quest_state: Mutex::new(None),
             manual_cdp_game: tokio::sync::Mutex::new(ManualCdpGameSessionState::default()),
+            manual_cdp_stream: tokio::sync::Mutex::new(ManualCdpStreamSessionState::default()),
             game_idle: std::sync::Arc::new(game_idle::GameIdleManager::default()),
             simulation_history: std::sync::Arc::new(
                 simulation_history::SimulationHistory::default(),
@@ -2286,6 +2476,9 @@ pub fn run() {
             start_manual_cdp_game_simulation,
             stop_manual_cdp_game_simulation,
             get_manual_cdp_game_simulation,
+            start_manual_cdp_stream_simulation,
+            stop_manual_cdp_stream_simulation,
+            get_manual_cdp_stream_simulation,
             start_game_idle,
             get_game_idle_status,
             remove_game_idle_queue_item,

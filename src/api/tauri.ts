@@ -389,6 +389,28 @@ export async function getManualCdpGameSimulation(): Promise<ManualCdpGameSimulat
   return await invoke('get_manual_cdp_game_simulation')
 }
 
+export interface ManualCdpStreamSimulation {
+  appId: string
+  appName: string
+  cdpPort: number
+}
+
+export async function startManualCdpStreamSimulation(
+  appId: string,
+  appName: string,
+  cdpPort: number
+): Promise<ManualCdpStreamSimulation> {
+  return await invoke('start_manual_cdp_stream_simulation', { appId, appName, cdpPort })
+}
+
+export async function stopManualCdpStreamSimulation(): Promise<void> {
+  return await invoke('stop_manual_cdp_stream_simulation')
+}
+
+export async function getManualCdpStreamSimulation(): Promise<ManualCdpStreamSimulation | null> {
+  return await invoke('get_manual_cdp_stream_simulation')
+}
+
 export type GameIdleMode = 'process' | 'cdp'
 export type GameIdlePhase = 'starting' | 'playing' | 'resting' | 'stopping' | 'error' | 'stopped'
 

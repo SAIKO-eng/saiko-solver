@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import GameSelector from '@/components/GameSelector.vue'
 import GameIdlePanel from '@/components/GameIdlePanel.vue'
-import type { DetectableGame, ManualCdpGameSimulation } from '@/api/tauri'
+import type { DetectableGame, ManualCdpGameSimulation, ManualCdpStreamSimulation } from '@/api/tauri'
 import {
   createSimulatedGame,
   runSimulatedGame,
@@ -13,6 +13,9 @@ import {
   startManualCdpGameSimulation,
   stopManualCdpGameSimulation,
   getManualCdpGameSimulation,
+  startManualCdpStreamSimulation,
+  stopManualCdpStreamSimulation,
+  getManualCdpStreamSimulation,
   startGameSimulationUsage,
   stopGameSimulationUsage,
   getGameSimulationUsageStatus,
@@ -22,7 +25,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { Loader2, Play, Square, Hammer, List, Terminal, FolderOpen, ChevronDown, Check, MonitorPlay, WifiOff, RotateCcw } from 'lucide-vue-next'
+import { Loader2, Play, Square, Hammer, List, Terminal, FolderOpen, ChevronDown, Check, MonitorPlay, WifiOff, RotateCcw, Radio } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { useQuestsStore } from '@/stores/quests'
 import { getSimulationExecutables } from '@/utils/executables'
@@ -47,14 +50,16 @@ const running = ref(false)
 const stopping = ref(false)
 const activeExecutable = ref<string | null>(null)
 const activeRpc = ref(false)
-const activeSimulationMode = ref<'process' | 'cdp' | null>(null)
+const activeSimulationMode = ref<'process' | 'cdp' | 'stream' | null>(null)
 const activeCdpSession = ref<ManualCdpGameSimulation | null>(null)
+const activeStreamSession = ref<ManualCdpStreamSimulation | null>(null)
 const historyFinalizationPending = ref(false)
 // A recovered pending segment may belong to a Game Idle session that was
 // stopped while this page was unmounted. Keep its retry surface distinct from
 // manual simulation state so an idle stop can clear only the recovered state.
 const historyFinalizationOwner = ref<'manual' | 'recovered' | null>(null)
 const cdpStarting = ref(false)
+const streamStarting = ref(false)
 const creating = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
@@ -78,6 +83,10 @@ onMounted(async () => {
     console.warn('Failed to restore manual CDP game simulation:', err)
     return null
   })
+  const manualStreamSession = getManualCdpStreamSimulation().catch(err => {
+    console.warn('Failed to restore manual CDP stream simulation:', err)
+    return null
+  })
   const runningProcesses = getRunningSimulatedGames().catch(err => {
     console.warn('Failed to restore process game simulation:', err)
     return []
@@ -86,12 +95,16 @@ onMounted(async () => {
     console.warn('Failed to restore simulation history state:', err)
     return null
   })
-  const [session, processes, persistedHistoryStatus] = await Promise.all([manualSession, runningProcesses, historyStatus, capabilities, cdpStatus])
+  const [session, streamSession, processes, persistedHistoryStatus] = await Promise.all([manualSession, manualStreamSession, runningProcesses, historyStatus, capabilities, cdpStatus])
 
   if (session) {
     activeSimulationMode.value = 'cdp'
     activeCdpSession.value = session
     success.value = t('game_sim.cdp_session_restored', { name: session.appName })
+  } else if (streamSession) {
+    activeSimulationMode.value = 'stream'
+    activeStreamSession.value = streamSession
+    success.value = t('game_sim.stream_state_restored', { name: streamSession.appName })
   } else if (!store.activeQuestId && !idleStore.isActive && !idleStore.loading && processes.length > 0) {
     activeSimulationMode.value = 'process'
     activeExecutable.value = processes[0]
@@ -127,7 +140,7 @@ watch(
 
 const hasActiveSimulation = computed(() => activeSimulationMode.value !== null || idleStore.isActive)
 const simulatorBusy = computed(
-  () => running.value || creating.value || cdpStarting.value || stopping.value
+  () => running.value || creating.value || cdpStarting.value || streamStarting.value || stopping.value
 )
 
 // Executables the simulator can actually launch here: Linux only runs a native
@@ -259,6 +272,14 @@ async function rollbackManualSimulation(): Promise<void> {
     try {
       await stopManualCdpGameSimulation()
       activeCdpSession.value = null
+      activeSimulationMode.value = null
+    } catch (e) {
+      failures.push(errorMessage(e))
+    }
+  } else if (activeSimulationMode.value === 'stream') {
+    try {
+      await stopManualCdpStreamSimulation()
+      activeStreamSession.value = null
       activeSimulationMode.value = null
     } catch (e) {
       failures.push(errorMessage(e))
@@ -398,6 +419,31 @@ async function handleRunCdpGame() {
   }
 }
 
+async function handleRunStream() {
+  const game = selectedGame.value
+  if (!game || creating.value || streamStarting.value || hasActiveSimulation.value || store.activeQuestId) return
+
+  streamStarting.value = true
+  error.value = null
+  success.value = null
+
+  try {
+    await store.initCdpMode()
+    if (!store.cdpAvailable) {
+      throw new Error(t('game_sim.cdp_unavailable'))
+    }
+
+    const session = await startManualCdpStreamSimulation(game.id, game.name, store.cdpPort)
+    activeStreamSession.value = session
+    activeSimulationMode.value = 'stream'
+    success.value = t('game_sim.stream_state_started', { name: game.name })
+  } catch (e) {
+    error.value = errorMessage(e)
+  } finally {
+    streamStarting.value = false
+  }
+}
+
 async function handleStopGame() {
   const simulationMode = activeSimulationMode.value
   if (!simulationMode || stopping.value) return
@@ -407,6 +453,14 @@ async function handleStopGame() {
   success.value = null
 
   try {
+    if (simulationMode === 'stream') {
+      await stopManualCdpStreamSimulation()
+      activeStreamSession.value = null
+      activeSimulationMode.value = null
+      success.value = t('game_sim.stream_state_stopped')
+      return
+    }
+
     if (simulationMode === 'cdp') {
       if (!historyFinalizationPending.value) {
         await stopManualCdpGameSimulation()
@@ -447,6 +501,8 @@ async function handleStopGame() {
       ? t('game_sim.history_stop_failed', { error: detail })
       : simulationMode === 'cdp'
       ? t('game_sim.cdp_cleanup_failed', { error: detail })
+      : simulationMode === 'stream'
+      ? t('game_sim.stream_state_cleanup_failed', { error: detail })
       : detail
   } finally {
     stopping.value = false
@@ -510,6 +566,17 @@ async function handleStopGame() {
             class="mb-6 p-3 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 rounded-md text-sm border border-emerald-500/20"
           >
             {{ t('game_sim.cdp_active', { name: activeCdpSession.appName }) }}
+          </div>
+
+          <div
+            v-if="activeSimulationMode === 'stream' && activeStreamSession"
+            class="mb-6 p-3 bg-violet-500/10 text-violet-700 dark:text-violet-300 rounded-md text-sm border border-violet-500/20 space-y-1"
+          >
+            <div class="flex items-center gap-2 font-medium">
+              <Radio class="w-4 h-4 shrink-0" />
+              {{ t('game_sim.stream_state_active', { name: activeStreamSession.appName }) }}
+            </div>
+            <p class="text-xs">{{ t('game_sim.stream_state_hint') }}</p>
           </div>
 
           <!-- ── SELECT MODE ─────────────────────────── -->
@@ -654,6 +721,20 @@ async function handleStopGame() {
             </Button>
 
             <Button
+              v-if="mode === 'select' && !hasActiveSimulation"
+              @click="handleRunStream"
+              variant="outline"
+              class="w-full border-violet-500/50 text-violet-700 hover:bg-violet-500/10 dark:text-violet-300"
+              :disabled="!selectedGame || !store.cdpAvailable || simulatorBusy || !!store.activeQuestId"
+              :title="store.cdpAvailable ? t('game_sim.stream_state_button_hint') : t('game_sim.cdp_unavailable')"
+            >
+              <Radio v-if="store.cdpAvailable && !streamStarting" class="w-4 h-4 mr-2" />
+              <WifiOff v-else-if="!store.cdpAvailable && !streamStarting" class="w-4 h-4 mr-2" />
+              <Loader2 v-else class="w-4 h-4 mr-2 animate-spin" />
+              {{ streamStarting ? t('game_sim.stream_state_starting') : t('game_sim.run_stream_state') }}
+            </Button>
+
+            <Button
               v-if="hasActiveSimulation"
               @click="handleStopGame"
               variant="destructive"
@@ -675,6 +756,10 @@ async function handleStopGame() {
               {{ t('game_sim.create_game') }}
             </Button>
           </div>
+
+          <p v-if="mode === 'select' && !hasActiveSimulation" class="text-xs text-muted-foreground">
+            {{ t('game_sim.stream_state_button_hint') }}
+          </p>
         </CardFooter>
       </Card>
     </div>

@@ -5,6 +5,7 @@ import zh from '@/locales/zh.json'
 import {
   firstProgressValue,
   firstStartableTask,
+  getQuestActionKind,
   getQuestKind,
   getQuestTasks,
   isPlayActivityTask,
@@ -28,6 +29,21 @@ function playActivityQuest(): Quest {
         PLAY_ACTIVITY: { value: 48 },
       },
     },
+  }
+}
+
+function desktopQuest(id: string, type: string): Quest {
+  return {
+    id,
+    config: {
+      messages: { quest_name: id },
+      task_config_v2: {
+        tasks: {
+          [type]: { type, target: 900 },
+        },
+      },
+    },
+    user_status: null,
   }
 }
 
@@ -59,5 +75,28 @@ describe('PLAY_ACTIVITY task helpers', () => {
   it('provides localized cloud-game badge labels', () => {
     expect(en.filter.activity_cloud_game).toBe('Activity - Cloud Game')
     expect(zh.filter.activity_cloud_game).toBe('活动 - 云游戏')
+  })
+})
+
+describe('quest action routing', () => {
+  it('routes desktop play and stream quests to different runners', () => {
+    const play = desktopQuest('play', 'PLAY_ON_DESKTOP')
+    const stream = desktopQuest('stream', 'STREAM_ON_DESKTOP')
+
+    // Both stay in the UI "game" kind, so execution cannot rely on it.
+    expect(getQuestKind(play)).toBe('stream')
+    expect(getQuestKind(stream)).toBe('stream')
+
+    expect(getQuestActionKind(play)).toBe('play')
+    expect(getQuestActionKind(stream)).toBe('stream')
+  })
+
+  it('separates cloud activities from checkpoint activities', () => {
+    expect(getQuestActionKind(playActivityQuest())).toBe('play_activity')
+    expect(getQuestActionKind(desktopQuest('checkpoint', 'ACHIEVEMENT_IN_ACTIVITY'))).toBe('activity')
+  })
+
+  it('returns null when no task can be started', () => {
+    expect(getQuestActionKind({ id: 'empty', config: {} } as Quest)).toBeNull()
   })
 })

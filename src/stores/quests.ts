@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import type { Quest, DetectableGame, DesktopClientArg, ExcludedQuest, GameQuestMode, PlatformCapabilities } from '@/api/tauri'
-import { getQuestKind, playActivityProgressPercentage } from '@/utils/questTasks'
+import { getQuestActionKind, playActivityProgressPercentage } from '@/utils/questTasks'
 import { resolveSimulationExecutable } from '@/utils/executables'
 
 /** Quest with optional pre-selected executable name for batch game quest processing */
@@ -687,6 +687,53 @@ export const useQuestsStore = defineStore('quests', () => {
     }
   }
 
+  /**
+   * Complete a STREAM_ON_DESKTOP quest with the mode-appropriate runner.
+   *
+   * Simulate mode cannot satisfy a stream quest — a detected game process is
+   * not a Go Live session — so it raises instead of silently launching a game
+   * that would never make progress.
+   */
+  async function startStreamForQuest(quest: Quest, secondsNeeded: number, initialProgress: number) {
+    if (gameQuestMode.value === 'simulate') {
+      throw new Error('Stream quests need CDP or heartbeat mode: launching a game process does not start a Go Live session')
+    }
+
+    if (gameQuestMode.value !== 'cdp') {
+      // Legacy direct-heartbeat mode.
+      await startStream(quest.id, `call:${quest.id}:1`, secondsNeeded, initialProgress)
+      return
+    }
+
+    const appId = quest.config.application?.id
+    if (!appId) throw new Error('Quest missing application ID')
+    if (!cdpAvailable.value) {
+      throw new Error('CDP mode is selected but Discord CDP is not available')
+    }
+    const appName = quest.config.application?.name || quest.config.messages.game_title || 'Game'
+    const progressPct = (secondsNeeded > 0) ? (initialProgress / secondsNeeded) * 100 : 0
+
+    startingQuestId.value = quest.id
+    error.value = null
+    try {
+      await startCdpQuest(quest.id, 'stream', appId, appName, secondsNeeded, initialProgress, cdpPort.value)
+
+      activeQuestId.value = quest.id
+      activeQuestType.value = 'stream'
+      activeQuestProgress.value = progressPct
+      activeQuestTargetDuration.value = secondsNeeded
+
+      // Stream progress is server-enforced real time; keep local progress honest.
+      startProgressSimulation(1.0)
+      setupListeners()
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : String(e)
+      throw e
+    } finally {
+      startingQuestId.value = null
+    }
+  }
+
   async function startPlay(quest: Quest, secondsNeeded: number, initialProgress: number, selectedExeName?: string) {
     startingQuestId.value = quest.id
     error.value = null
@@ -1209,6 +1256,10 @@ export const useQuestsStore = defineStore('quests', () => {
 
     onQuestError(async (err) => {
       console.log('Received quest-error event:', err)
+      const failedQuestId = activeQuestId.value
+      const advanceQueue = isQueueRunning.value
+        && failedQuestId !== null
+        && questQueue.value[0]?.id === failedQuestId
       const failedExecutable = activeGameExe.value
       if (failedExecutable && gameQuestMode.value === 'simulate') {
         await stopSimulatedGame(failedExecutable).catch(() => undefined)
@@ -1225,6 +1276,17 @@ export const useQuestsStore = defineStore('quests', () => {
       stopProgressSimulation()
 
       cleanupListeners()
+
+      // A failed queued quest must not freeze the rest of the queue: drop it
+      // and move on, keeping the error visible.
+      if (advanceQueue) {
+        questQueue.value.shift()
+        stopPolling()
+        void fetchQuests(true, true)
+        setTimeout(() => {
+          if (isQueueRunning.value) void processQueue()
+        }, 250)
+      }
     }).then((unlisten) => {
       errorUnlisten = unlisten
       console.log('Quest error listener ready')
@@ -1327,15 +1389,32 @@ export const useQuestsStore = defineStore('quests', () => {
         return
       }
 
-      // Route by quest type
-      const questKind = getQuestKind(queueItem)
-      console.log(`Queue item type: ${questKind}`)
+      // Route by the first startable task, not the UI "game" filter: stream
+      // quests need the streaming path and activities their own runner.
+      const action = getQuestActionKind(queueItem)
+      console.log(`Queue item action: ${action}`)
 
-      if (questKind === 'video') {
-        await startVideo(queueItem.id, seconds, progress)
-      } else {
-        // Game (stream/play) quests — use startPlay with optional pre-selected exe
-        await startPlay(queueItem, seconds, progress, queueItem.selectedExeName)
+      switch (action) {
+        case 'video':
+          await startVideo(queueItem.id, seconds, progress)
+          break
+        case 'play':
+          await startPlay(queueItem, seconds, progress, queueItem.selectedExeName)
+          break
+        case 'stream':
+          await startStreamForQuest(queueItem, seconds, progress)
+          break
+        case 'play_activity':
+          await startPlayActivity(queueItem, seconds, progress)
+          break
+        case 'activity':
+          await startActivity(queueItem)
+          break
+        default:
+          console.warn(`Queue item ${queueItem.id} has no startable task; skipping`)
+          questQueue.value.shift()
+          void processQueue()
+          return
       }
 
       // Now we wait for completion.
@@ -1542,6 +1621,7 @@ export const useQuestsStore = defineStore('quests', () => {
     updateQuestEnrollment,
     startVideo,
     startStream,
+    startStreamForQuest,
     startPlay,
     startActivity,
     startPlayActivity,
