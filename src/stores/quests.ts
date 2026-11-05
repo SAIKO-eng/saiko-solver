@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Quest, DetectableGame, DesktopClientArg, ExcludedQuest, GameQuestMode, PlatformCapabilities } from '@/api/tauri'
 import { getQuestActionKind, playActivityProgressPercentage } from '@/utils/questTasks'
 import { resolveSimulationExecutable } from '@/utils/executables'
@@ -95,12 +95,27 @@ export const useQuestsStore = defineStore('quests', () => {
   const localProgress = ref(0)
   const activeGameExe = ref<string | null>(null)
 
-  // Speed multiplier - read from localStorage, default 1, range 0.1 - 2.0
+  // Safe Mode - on by default. Discord compares submitted video-progress
+  // timestamps against wall-clock time, so advancing faster than real time is
+  // the clearest "inauthentic engagement" signal a quest helper can emit.
+  // Safe Mode pins video progress to real time and disables the forced jump
+  // sent when a quest is stopped.
+  const STORAGE_SAFE_MODE_KEY = 'questHelper_safeMode'
+  const savedSafeMode = localStorage.getItem(STORAGE_SAFE_MODE_KEY)
+  const safeMode = ref(savedSafeMode === null ? true : savedSafeMode === 'true')
+  const SAFE_SPEED_MULTIPLIER = 1.0
+  const SAFE_HEARTBEAT_INTERVAL = 30
+
+  // Speed multiplier - read from localStorage, default 1, range 0.1 - 2.0.
+  // Safe Mode pins it to real time regardless of the saved value.
   const savedSpeed = localStorage.getItem(STORAGE_SPEED_KEY)
   let initialSpeed = savedSpeed ? parseFloat(savedSpeed) : 1.0
   // Validate range (0.1 to 2.0)
   if (isNaN(initialSpeed) || initialSpeed < 0.1 || initialSpeed > 2.0) {
     initialSpeed = 1.0
+  }
+  if (safeMode.value) {
+    initialSpeed = SAFE_SPEED_MULTIPLIER
   }
   const speedMultiplier = ref(initialSpeed)
 
@@ -112,7 +127,19 @@ export const useQuestsStore = defineStore('quests', () => {
   if (isNaN(initialInterval) || initialInterval < 10 || initialInterval > 30) {
     initialInterval = 15
   }
+  if (safeMode.value) {
+    initialInterval = SAFE_HEARTBEAT_INTERVAL
+  }
   const heartbeatInterval = ref(initialInterval)
+
+  // The values actually sent to the API. Safe Mode overrides the sliders so
+  // the UI cannot claim real-time progress while sending something faster.
+  const effectiveSpeedMultiplier = computed(() =>
+    safeMode.value ? SAFE_SPEED_MULTIPLIER : speedMultiplier.value
+  )
+  const effectiveHeartbeatInterval = computed(() =>
+    safeMode.value ? SAFE_HEARTBEAT_INTERVAL : heartbeatInterval.value
+  )
 
   // Game polling interval (seconds) - for Play/Game quests progress detection.
   // Kept short so a finished simulation is noticed quickly instead of idling
@@ -287,6 +314,16 @@ export const useQuestsStore = defineStore('quests', () => {
   // Persist heartbeat interval changes
   watch(heartbeatInterval, (newInterval) => {
     localStorage.setItem(STORAGE_INTERVAL_KEY, String(newInterval))
+  })
+
+  // Persist Safe Mode changes. Enabling it clamps the sliders so what the UI
+  // shows matches what is actually sent to Discord.
+  watch(safeMode, (enabled) => {
+    localStorage.setItem(STORAGE_SAFE_MODE_KEY, String(enabled))
+    if (enabled) {
+      speedMultiplier.value = SAFE_SPEED_MULTIPLIER
+      heartbeatInterval.value = SAFE_HEARTBEAT_INTERVAL
+    }
   })
 
   // Persist game polling interval changes
@@ -647,8 +684,8 @@ export const useQuestsStore = defineStore('quests', () => {
         // CDP mode: use Discord's internal api.post() for video progress
         await startCdpQuest(questId, 'video', '', '', secondsNeeded, initialProgress, cdpPort.value)
       } else {
-        console.log(`[startVideo] mode=${gameQuestMode.value} speed=${speedMultiplier.value}x interval=${heartbeatInterval.value}s`)
-        await startVideoQuest(questId, secondsNeeded, progressPct, speedMultiplier.value, heartbeatInterval.value)
+        console.log(`[startVideo] mode=${gameQuestMode.value} safeMode=${safeMode.value} speed=${effectiveSpeedMultiplier.value}x interval=${effectiveHeartbeatInterval.value}s`)
+        await startVideoQuest(questId, secondsNeeded, progressPct, effectiveSpeedMultiplier.value, effectiveHeartbeatInterval.value)
       }
 
       activeQuestId.value = questId
@@ -657,7 +694,7 @@ export const useQuestsStore = defineStore('quests', () => {
       activeQuestTargetDuration.value = secondsNeeded
 
       // CDP video progress is server-enforced real-time; don't inflate local simulation
-      startProgressSimulation(gameQuestMode.value === 'cdp' ? 1.0 : speedMultiplier.value)
+      startProgressSimulation(gameQuestMode.value === 'cdp' ? 1.0 : effectiveSpeedMultiplier.value)
       setupListeners()
     } catch (e) {
       error.value = e instanceof Error ? e.message : String(e)
@@ -1106,8 +1143,10 @@ export const useQuestsStore = defineStore('quests', () => {
     stopProgressSimulation()
 
     try {
-      // Force Save Logic for Video Quests (skip in CDP mode — progress is server-managed)
-      if (activeQuestId.value && activeQuestType.value === 'video' && activeQuestTargetDuration.value > 0 && gameQuestMode.value !== 'cdp') {
+      // Force Save Logic for Video Quests (skip in CDP mode — progress is
+      // server-managed — and in Safe Mode, where a sudden jump would defeat
+      // the real-time guarantee).
+      if (activeQuestId.value && activeQuestType.value === 'video' && activeQuestTargetDuration.value > 0 && gameQuestMode.value !== 'cdp' && !safeMode.value) {
         try {
           const currentSeconds = (localProgress.value / 100) * activeQuestTargetDuration.value
           // Only force if we have significant progress
@@ -1310,6 +1349,8 @@ export const useQuestsStore = defineStore('quests', () => {
   }
 
   function setSpeedMultiplier(speed: number) {
+    // Safe Mode owns the speed; ignore programmatic overrides while it is on.
+    if (safeMode.value) return
     speedMultiplier.value = speed
   }
 
@@ -1605,6 +1646,9 @@ export const useQuestsStore = defineStore('quests', () => {
     activeQuestProgress,
     activeQuestTargetDuration,
     localProgress, // Export local progress
+    safeMode,
+    effectiveSpeedMultiplier,
+    effectiveHeartbeatInterval,
     speedMultiplier,
     heartbeatInterval,
     gamePollingInterval,

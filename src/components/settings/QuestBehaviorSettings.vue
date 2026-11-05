@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { AlertTriangle, Bot, Check, Copy, FolderOpen, Gamepad2, MonitorPlay, RotateCw, Wifi } from 'lucide-vue-next'
+import { AlertTriangle, Bot, Check, Copy, FolderOpen, Gamepad2, MonitorPlay, RotateCw, ShieldCheck, Wifi } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { invoke } from '@tauri-apps/api/core'
 import { open as openFolderPicker } from '@tauri-apps/plugin-dialog'
@@ -15,6 +15,7 @@ import AdvancedDisclosure from './AdvancedDisclosure.vue'
 import SettingRow from './SettingRow.vue'
 import SettingsSectionCard from './SettingsSectionCard.vue'
 import SettingsStatusPanel from './SettingsStatusPanel.vue'
+import SettingsSwitch from './SettingsSwitch.vue'
 import { cn } from '@/lib/utils'
 import { settingToneClass } from './settingTones'
 
@@ -115,6 +116,21 @@ onMounted(() => {
     tone="violet"
     content-class="space-y-6"
   >
+      <div class="flex items-start justify-between gap-4 rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-4">
+        <div class="min-w-0">
+          <Label class="flex items-center gap-2">
+            <ShieldCheck class="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            {{ t('settings.safe_mode') }}
+          </Label>
+          <p class="mt-1 text-xs text-muted-foreground">{{ t('settings.safe_mode_desc') }}</p>
+        </div>
+        <SettingsSwitch v-model="questsStore.safeMode" />
+      </div>
+
+      <SettingsStatusPanel v-if="questsStore.safeMode" tone="success" :icon="ShieldCheck">
+        {{ t('settings.safe_mode_notice') }}
+      </SettingsStatusPanel>
+
       <div class="space-y-3">
         <Label>{{ t('settings.game_quest_mode') }}</Label>
         <div class="grid gap-3 md:grid-cols-2">
@@ -201,12 +217,12 @@ onMounted(() => {
                 min="0.1"
                 max="2.0"
                 step="0.1"
-                :disabled="questsStore.gameQuestMode === 'cdp'"
+                :disabled="questsStore.safeMode || questsStore.gameQuestMode === 'cdp'"
                 :aria-label="t('settings.completion_speed')"
                 class="w-48 accent-primary disabled:opacity-50"
               />
               <Badge variant="outline" :class="settingToneClass.primary.badge">
-                {{ questsStore.speedMultiplier }}x
+                {{ questsStore.effectiveSpeedMultiplier }}x
               </Badge>
             </div>
           </SettingRow>
@@ -222,12 +238,12 @@ onMounted(() => {
                 min="10"
                 max="30"
                 step="1"
-                :disabled="questsStore.gameQuestMode === 'cdp'"
+                :disabled="questsStore.safeMode || questsStore.gameQuestMode === 'cdp'"
                 :aria-label="t('settings.request_interval')"
                 class="w-48 accent-primary disabled:opacity-50"
               />
               <Badge variant="outline" :class="settingToneClass.primary.badge">
-                {{ questsStore.heartbeatInterval }}s
+                {{ questsStore.effectiveHeartbeatInterval }}s
               </Badge>
             </div>
           </SettingRow>

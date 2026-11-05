@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-import { Timer } from 'lucide-vue-next'
+import { ShieldCheck, Timer } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import SettingsSectionCard from '@/components/settings/SettingsSectionCard.vue'
+import { useQuestsStore } from '@/stores/quests'
 import { commandErrorMessage } from '@/utils/commandError'
 
 interface SciencePlaytimeStatus {
@@ -36,6 +37,7 @@ const gamesLimit = ref<number | null>(null)
 const status = ref<SciencePlaytimeStatus>({ ...emptyStatus })
 const busy = ref(false)
 const error = ref<string | null>(null)
+const questsStore = useQuestsStore()
 
 let timer: ReturnType<typeof setInterval> | null = null
 
@@ -81,6 +83,10 @@ async function refresh() {
 }
 
 async function start() {
+  if (questsStore.safeMode) {
+    error.value = 'Safe Mode is enabled. Disable it in Settings → Quest Behavior before starting.'
+    return
+  }
   busy.value = true
   error.value = null
   try {
@@ -112,7 +118,19 @@ async function cancel() {
 onMounted(async () => {
   await refresh()
   if (status.value.running) {
-    startPolling()
+    if (questsStore.safeMode) {
+      await cancel()
+    } else {
+      startPolling()
+    }
+  }
+})
+
+// Enabling Safe Mode while an injection is running must stop it, not just
+// disable the button for the next run.
+watch(() => questsStore.safeMode, (enabled) => {
+  if (enabled && status.value.running) {
+    void cancel()
   }
 })
 
@@ -126,6 +144,20 @@ onBeforeUnmount(stopPolling)
     :icon="Timer"
   >
     <div class="space-y-4">
+      <div
+        v-if="questsStore.safeMode"
+        class="flex items-start gap-2.5 rounded-lg border border-amber-500/25 bg-amber-500/5 px-4 py-3 text-sm"
+      >
+        <ShieldCheck class="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+        <div class="min-w-0">
+          <p class="font-medium">Disabled by Safe Mode</p>
+          <p class="mt-1 text-muted-foreground">
+            Science playtime injection is turned off because it fabricates activity Discord can detect.
+            Turn off Safe Mode in Settings → Quest Behavior only if you accept the account risk.
+          </p>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label class="space-y-1.5 text-sm">
           <span class="font-medium">Hours per game</span>
@@ -134,7 +166,7 @@ onBeforeUnmount(stopPolling)
             type="number"
             min="0"
             step="0.5"
-            :disabled="status.running"
+            :disabled="status.running || questsStore.safeMode"
             class="h-10 w-full rounded-md border border-input bg-background px-3 text-sm disabled:opacity-50"
           />
         </label>
@@ -146,7 +178,7 @@ onBeforeUnmount(stopPolling)
             type="number"
             min="1"
             placeholder="all detectable games"
-            :disabled="status.running"
+            :disabled="status.running || questsStore.safeMode"
             class="h-10 w-full rounded-md border border-input bg-background px-3 text-sm disabled:opacity-50"
           />
         </label>
@@ -182,7 +214,7 @@ onBeforeUnmount(stopPolling)
       <div class="flex gap-2">
         <Button
           v-if="!status.running"
-          :disabled="busy"
+          :disabled="busy || questsStore.safeMode"
           @click="start"
         >
           Start

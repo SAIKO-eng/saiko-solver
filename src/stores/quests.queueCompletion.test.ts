@@ -95,4 +95,23 @@ describe('queued quest completion', () => {
     expect(store.activeQuestId).toBe('first')
     expect(store.error).toContain('history disk full')
   })
+
+  it('keeps video progress in real time by default', async () => {
+    await queuedStore()
+
+    expect(mocks.startVideoQuest).toHaveBeenCalledWith('first', 60, 0, 1, 30)
+  })
+
+  it('uses the configured speed only after safe mode is disabled', async () => {
+    const store = useQuestsStore()
+    store.safeMode = false
+    store.speedMultiplier = 2
+    store.heartbeatInterval = 10
+    store.addToQueue({ id: 'first' } as Quest)
+    store.isQueueRunning = true
+
+    await store.startVideo('first', 60, 0)
+
+    expect(mocks.startVideoQuest).toHaveBeenCalledWith('first', 60, 0, 2, 10)
+  })
 })

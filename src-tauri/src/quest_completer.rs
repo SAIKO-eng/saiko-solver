@@ -1,6 +1,5 @@
 use crate::discord_api::DiscordApiClient;
 use anyhow::Result;
-use rand::RngExt;
 use std::time::Duration;
 use tauri::Emitter;
 use tokio::time::{sleep, sleep_until, Instant};
@@ -115,18 +114,14 @@ pub async fn complete_video_quest(
             }
         }
 
-        // Advance timestamp based on speed and actual wait time
+        // Advance timestamp based on speed and actual wait time.
         current_seconds += speed * (wait_secs as f64);
+        // No additive jitter: it made the submitted timestamp drift ahead of
+        // wall-clock time, which is exactly the pattern Discord flags.
         let timestamp = current_seconds.min(seconds_needed as f64);
 
-        // Add some randomness to look more natural
-        let timestamp_with_jitter = timestamp + rand::rng().random_range(0.0..0.5);
-
         // Send progress update
-        match client
-            .update_video_progress(&quest_id, timestamp_with_jitter)
-            .await
-        {
+        match client.update_video_progress(&quest_id, timestamp).await {
             Ok(completed) => {
                 // Calculate and emit progress percentage
                 let progress = (timestamp / seconds_needed as f64 * 100.0).min(100.0);
