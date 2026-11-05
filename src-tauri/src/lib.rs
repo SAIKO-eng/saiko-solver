@@ -17,6 +17,7 @@ mod quest_completer;
 #[cfg(any(target_os = "macos", target_os = "linux"))]
 mod runtime_bridge;
 mod runtime_identity;
+mod science_spoof;
 mod simulation_history;
 #[cfg(windows)]
 #[cfg_attr(debug_assertions, allow(dead_code))]
@@ -2531,7 +2532,10 @@ pub fn run() {
             navigate_discord_spa,
             platform_capabilities::get_platform_capabilities,
             runtime_identity::get_runtime_identity_status,
-            runtime_identity::get_runtime_identity_audit
+            runtime_identity::get_runtime_identity_audit,
+            science_spoof::start_science_playtime,
+            science_spoof::get_science_playtime_status,
+            science_spoof::cancel_science_playtime
         ])
         .on_window_event(|_window, event| {
             if let tauri::WindowEvent::Destroyed = event {
