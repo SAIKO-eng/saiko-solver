@@ -7,6 +7,7 @@ import AboutSettings from '@/components/settings/AboutSettings.vue'
 import DiagnosticsSettings from '@/components/settings/DiagnosticsSettings.vue'
 import DiscordIntegrationSettings from '@/components/settings/DiscordIntegrationSettings.vue'
 import QuestBehaviorSettings from '@/components/settings/QuestBehaviorSettings.vue'
+import SciencePlaytimePanel from '@/components/SciencePlaytimePanel.vue'
 import SettingsNav from '@/components/settings/SettingsNav.vue'
 import SettingsOverview from '@/components/settings/SettingsOverview.vue'
 import { useSettingsNavigation } from '@/composables/useSettingsNavigation'
@@ -51,7 +52,10 @@ onMounted(() => {
         <DiscordIntegrationSettings v-else-if="selectedSection === 'discord_integration'" />
         <AppearanceSettings v-else-if="selectedSection === 'appearance'" />
         <DiagnosticsSettings v-else-if="selectedSection === 'diagnostics'" />
-        <AdvancedSettings v-else-if="selectedSection === 'advanced'" />
+        <div v-else-if="selectedSection === 'advanced'" class="space-y-5">
+          <AdvancedSettings />
+          <SciencePlaytimePanel />
+        </div>
         <AboutSettings
           v-else
           @debug-unlocked="emit('debug-unlocked')"
