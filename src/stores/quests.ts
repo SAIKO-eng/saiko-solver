@@ -10,6 +10,14 @@ interface QueueItem extends Quest {
 }
 
 /**
+ * Discord error code for a suspended quest-access account.
+ *
+ * Mirrors `QUEST_ACCESS_SUSPENDED_CODE` in `src-tauri/src/discord_api.rs`;
+ * matched against the backend's `code 260024` message marker.
+ */
+const QUEST_ACCESS_SUSPENDED_CODE = 260024
+
+/**
  * A recoverable, non-fatal quest condition surfaced to the UI.
  *
  * Unlike a thrown Error, a soft error does not abort the queue or read as a
@@ -1316,9 +1324,17 @@ export const useQuestsStore = defineStore('quests', () => {
 
       cleanupListeners()
 
+      // Discord suspended quest access for this account (code 260024). Every
+      // remaining quest would fail identically, so the whole queue is drained
+      // rather than replaying the failure once per item.
+      const suspended = err.includes(`code ${QUEST_ACCESS_SUSPENDED_CODE}`)
+
       // A failed queued quest must not freeze the rest of the queue: drop it
       // and move on, keeping the error visible.
-      if (advanceQueue) {
+      if (suspended) {
+        questQueue.value = []
+        isQueueRunning.value = false
+      } else if (advanceQueue) {
         questQueue.value.shift()
         stopPolling()
         void fetchQuests(true, true)

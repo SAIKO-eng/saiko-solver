@@ -13,6 +13,38 @@ const DISCORD_API_BASE: &str = "https://discord.com/api/v9";
 const PROXY_STATE_CHECK_INTERVAL_MS: u64 = 5_000;
 const QUEST_HOME_REFERER: &str = "https://discord.com/quest-home";
 
+/// Discord's error code for an account whose quest access has been suspended.
+///
+/// Returned as `{"message":"User access to quests is suspended","code":260024}`
+/// with HTTP 403 once Discord flags an account. The suspension is enforced
+/// server-side, so no client-side change can lift it.
+pub const QUEST_ACCESS_SUSPENDED_CODE: i64 = 260024;
+
+/// Message surfaced when Discord reports [`QUEST_ACCESS_SUSPENDED_CODE`].
+///
+/// Kept as a single constant so the frontend can recognise the condition by
+/// its `code 260024` marker without re-parsing Discord's response body.
+pub const QUEST_ACCESS_SUSPENDED_MESSAGE: &str =
+    "Discord has suspended quest access for this account (code 260024). \
+The suspension is enforced by Discord's servers and cannot be lifted from this app; \
+wait for it to expire before starting more quests.";
+
+/// Detect Discord's quest-access suspension in a failed response.
+///
+/// Returns the user-facing message when the response is an HTTP 403 carrying
+/// code 260024, or `None` for any other failure so callers keep their normal
+/// error reporting.
+pub fn quest_suspension_message(status: reqwest::StatusCode, body: &str) -> Option<String> {
+    if status != reqwest::StatusCode::FORBIDDEN {
+        return None;
+    }
+    let parsed: serde_json::Value = serde_json::from_str(body).ok()?;
+    if parsed.get("code")?.as_i64()? != QUEST_ACCESS_SUSPENDED_CODE {
+        return None;
+    }
+    Some(QUEST_ACCESS_SUSPENDED_MESSAGE.to_string())
+}
+
 pub(crate) fn parse_play_activity_heartbeat_response(
     body: &serde_json::Value,
 ) -> Result<PlayActivityHeartbeatStatus> {
@@ -889,6 +921,9 @@ impl DiscordApiClient {
         if !response.status().is_success() {
             let status = response.status();
             let body = response.text().await.unwrap_or_default();
+            if let Some(message) = quest_suspension_message(status, &body) {
+                anyhow::bail!("{}", message);
+            }
             anyhow::bail!("Failed to update video progress: {} - {}", status, body);
         }
 
