@@ -21,6 +21,7 @@ import LoginPanel from './components/auth/LoginPanel.vue'
 import { persistSettingsSection } from '@/composables/useSettingsNavigation'
 import { supportedLocales } from '@/locales/meta'
 import { isDebugModeEnabled } from '@/utils/debugMode'
+import { isMobilePlatform } from '@/utils/platform'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,10 @@ import {
 
 const { t, locale } = useI18n()
 const currentTab = ref<AppTab>('home')
+// The frameless title bar and the CDP exit dialog drive desktop-only window
+// APIs (startDragging, minimize, onCloseRequested) that Android does not
+// implement, so neither is mounted on mobile.
+const isMobile = isMobilePlatform()
 const authStore = useAuthStore()
 const gameIdleStore = useGameIdleStore()
 const authTransitioning = ref(false)
@@ -185,8 +190,8 @@ watch(
 
 <template>
   <div class="h-screen bg-background text-foreground font-sans flex flex-col overflow-hidden">
-    <DiscordCdpExitDialog />
-    <TitleBar />
+    <DiscordCdpExitDialog v-if="!isMobile" />
+    <TitleBar v-if="!isMobile" />
     
     <div class="flex-1 overflow-auto">
       <div

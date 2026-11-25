@@ -1,0 +1,204 @@
+name: 'build-android'
+
+# Builds the Android APK entirely in CI so no local Android SDK, NDK or Rust
+# toolchain is required. Download the APK from the run's Artifacts section, or
+# from the release once one exists for the current version.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src-tauri/**'
+      - 'src/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'public/version.txt'
+      - '.github/workflows/build-android.yml'
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+  # No CARGO_TARGET_DIR override here: Tauri's Android Gradle plugin resolves
+  # the compiled .so from cargo's default target directory, and redirecting it
+  # would break that lookup.
+  # Single ABI keeps the APK small; matches the min SDK of Android 12.
+  ANDROID_TARGET: aarch64
+  RUST_TARGET: aarch64-linux-android
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: 'pnpm'
+
+      - name: setup java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          # Matches the JDK Tauri's own Android CI uses; Gradle 9.6 / AGP 9.3
+          # from the generated project are validated against it.
+          java-version: '25'
+
+      - name: setup android sdk
+        uses: android-actions/setup-android@v4
+
+      - name: accept android sdk licenses
+        shell: bash
+        # AGP downloads the compileSdk platform (37) on demand, which only works
+        # once every license has been accepted.
+        run: yes | sdkmanager --licenses > /dev/null || true
+
+      - name: install android sdk packages
+        shell: bash
+        # cargo-mobile2 resolves the NDK before Gradle ever runs, so it has to
+        # exist up front rather than being downloaded later. build-tools is
+        # installed explicitly too: apksigner lives there and the signing step
+        # must not depend on AGP having fetched it.
+        run: |
+          set -euo pipefail
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [ -z "$sdk_root" ]; then
+            echo "ANDROID_HOME / ANDROID_SDK_ROOT is not set" >&2
+            exit 1
+          fi
+          sdkmanager "platform-tools" "build-tools;35.0.0" "ndk;28.2.13676358"
+          ndk_dir="$sdk_root/ndk/28.2.13676358"
+          test -d "$ndk_dir"
+          {
+            echo "ANDROID_HOME=$sdk_root"
+            echo "ANDROID_SDK_ROOT=$sdk_root"
+            echo "NDK_HOME=$ndk_dir"
+            echo "ANDROID_NDK_HOME=$ndk_dir"
+            echo "ANDROID_NDK_ROOT=$ndk_dir"
+            echo "NDK_ROOT=$ndk_dir"
+          } >> "$GITHUB_ENV"
+
+      - name: install rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ env.RUST_TARGET }}
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v5
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-registry-
+
+      - name: Cache Cargo index
+        uses: actions/cache@v5
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-index-
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+          key: android-aarch64
+
+      - name: install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync version from public/version.txt
+        run: pnpm run sync-version
+
+      - name: Build frontend
+        run: pnpm run build
+
+      - name: Generate Android project
+        # --ci keeps the command non-interactive; app name, identifier and min
+        # SDK are all read from src-tauri/tauri.conf.json. Existing files are
+        # left untouched, so this is safe to re-run.
+        run: pnpm tauri android init --ci --skip-targets-install
+
+      - name: Apply project launcher icons
+        shell: bash
+        # The generated project ships Tauri's placeholder launcher icons. The
+        # real ones were already produced by `tauri icon` into
+        # src-tauri/icons/android, so overwrite only the identically named
+        # PNGs — no resource is added or removed, which keeps the merge safe.
+        run: |
+          set -euo pipefail
+          src=src-tauri/icons/android
+          dest=src-tauri/gen/android/app/src/main/res
+          test -d "$src"
+          copied=0
+          for png in "$src"/mipmap-*/*.png; do
+            rel=${png#"$src"/}
+            test -f "$dest/$rel" || { echo "unexpected icon $rel"; exit 1; }
+            cp "$png" "$dest/$rel"
+            copied=$((copied + 1))
+          done
+          echo "overlaid $copied launcher icon PNGs"
+
+      - name: Build Android APK
+        run: pnpm tauri android build --target ${{ env.ANDROID_TARGET }} --apk
+
+      - name: Sign APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          keystore="$RUNNER_TEMP/saiko-release.keystore"
+          keytool -genkeypair -v \
+            -keystore "$keystore" \
+            -alias saiko \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass saiko123 -keypass saiko123 \
+            -dname "CN=SAIKO SOLVER, OU=Mobile, O=SAIKO, L=NA, S=NA, C=US"
+
+          unsigned=$(ls src-tauri/gen/android/app/build/outputs/apk/*/release/*-unsigned.apk | head -n 1)
+          echo "Signing $unsigned"
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n 1)
+          "$apksigner" sign \
+            --ks "$keystore" \
+            --ks-pass pass:saiko123 \
+            --key-pass pass:saiko123 \
+            --out "$RUNNER_TEMP/saiko-solver.apk" \
+            "$unsigned"
+          "$apksigner" verify --print-certs "$RUNNER_TEMP/saiko-solver.apk"
+
+          version=$(tr -d '\r\n' < public/version.txt)
+          cp "$RUNNER_TEMP/saiko-solver.apk" "$RUNNER_TEMP/SAIKO-SOLVER-Android-arm64-$version.apk"
+          echo "APK_PATH=$RUNNER_TEMP/SAIKO-SOLVER-Android-arm64-$version.apk" >> "$GITHUB_ENV"
+          ls -lh "$RUNNER_TEMP"/*.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: saiko-solver-android-arm64
+          path: ${{ env.APK_PATH }}
+          if-no-files-found: error
+
+      - name: Attach APK to release
+        # The desktop `publish` workflow owns release creation; only attach here
+        # when a release for this version already exists.
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          version=$(tr -d '\r\n' < public/version.txt)
+          if gh release view "$version" > /dev/null 2>&1; then
+            gh release upload "$version" "$APK_PATH" --clobber
+            echo "Attached APK to release $version"
+          else
+            echo "No release $version yet; APK is available as a workflow artifact."
+          fi

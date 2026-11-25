@@ -21,7 +21,6 @@ discord-sdk = "0.4.0"
 once_cell = "1.21"
 
 tokio = { version = "1", features = ["full"] }
-reqwest = { version = "0.13", default-features = false, features = ["native-tls", "json", "charset", "http2", "system-proxy", "socks"] }
 regex = "1"
 base64 = "0.22"
 aes-gcm = "0.10"
@@ -31,7 +30,6 @@ arc-swap = "1.7"
 ctrlc = "3.5"
 uuid = { version = "1", features = ["v4"] }
 chrono = { version = "0.4", features = ["serde"] }
-tokio-tungstenite = { version = "0.28", features = ["native-tls"] }
 futures-util = "0.3"
 flate2 = "1"
 url = "2"
@@ -74,6 +72,22 @@ cbc = { version = "0.1", features = ["alloc"] }
 pbkdf2 = "0.12"
 secret-service = { version = "5.1", default-features = false, features = ["rt-tokio-crypto-rust"] }
 sha1 = "0.10"
+
+# TLS backend is chosen per target.
+#
+# Desktop keeps native-tls so the existing builds keep using the OS trust store
+# exactly as before. Android cannot: native-tls resolves to openssl-sys, which
+# has no OpenSSL in the NDK sysroot and no pkg-config to find one, so the build
+# script fails. rustls is pure-Rust (aws-lc-rs provides the crypto) and uses
+# rustls-platform-verifier, which still reads the platform trust store — so
+# certificate behaviour stays equivalent.
+[target.'cfg(not(target_os = "android"))'.dependencies]
+reqwest = { version = "0.13", default-features = false, features = ["native-tls", "json", "charset", "http2", "system-proxy", "socks"] }
+tokio-tungstenite = { version = "0.28", features = ["native-tls"] }
+
+[target.'cfg(target_os = "android")'.dependencies]
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "json", "charset", "http2", "system-proxy", "socks"] }
+tokio-tungstenite = { version = "0.28", features = ["rustls-tls-webpki-roots"] }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["test-util"] }

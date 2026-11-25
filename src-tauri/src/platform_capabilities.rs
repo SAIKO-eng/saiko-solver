@@ -10,7 +10,7 @@ use serde::Serialize;
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlatformCapabilities {
-    /// Host operating system: `windows`, `macos`, `linux`, or `unknown`.
+    /// Host operating system: `windows`, `macos`, `linux`, `android`, or `unknown`.
     pub os: &'static str,
     /// Host architecture: `x86_64`, `aarch64`, or `unknown`.
     pub arch: &'static str,
@@ -69,6 +69,19 @@ impl PlatformCapabilities {
                 executable_os_priority: vec!["linux", "win32"],
                 default_game_quest_mode: "cdp",
             },
+            // Android has no desktop client to launch and no process to
+            // simulate, so only the HTTP quest API is reachable. Manual token
+            // entry stays available; auto-detection and CDP do not.
+            "android" => PlatformCapabilities {
+                os: "android",
+                arch,
+                cdp_launcher: false,
+                launcher_entry: false,
+                game_simulation: false,
+                token_auto_detection: "manual_only",
+                executable_os_priority: vec!["win32"],
+                default_game_quest_mode: "heartbeat",
+            },
             _ => PlatformCapabilities {
                 os: "unknown",
                 arch,
@@ -124,6 +137,16 @@ mod tests {
         assert_eq!(caps.default_game_quest_mode, "cdp");
         assert_eq!(caps.token_auto_detection, "full");
         assert!(caps.cdp_launcher && caps.launcher_entry && caps.game_simulation);
+    }
+
+    #[test]
+    fn android_reports_manual_token_entry_without_desktop_features() {
+        let caps = PlatformCapabilities::for_os("android", "aarch64");
+        assert_eq!(caps.os, "android");
+        assert_eq!(caps.arch, "aarch64");
+        assert_eq!(caps.token_auto_detection, "manual_only");
+        assert_eq!(caps.default_game_quest_mode, "heartbeat");
+        assert!(!caps.cdp_launcher && !caps.launcher_entry && !caps.game_simulation);
     }
 
     #[test]
